@@ -14,7 +14,7 @@ export default function Home() {
       <section 
         className="relative bg-cover bg-center bg-no-repeat min-h-screen flex items-center"
         style={{
-          backgroundImage: `url('/assets/backgrounds/Main_menu_screen.png')`,
+          backgroundImage: `url('/assets/backgrounds/game_background_desktop.png')`,
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
