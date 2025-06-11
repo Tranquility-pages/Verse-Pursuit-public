@@ -1,1 +1,3 @@
-- Commit message guidance: Add "Generated with [Claude Code](https://claude.ai/code)" and "Co-Authored-By: Claude <noreply@anthropic.com>" to commits
+# Project Notes
+
+This file contains development notes and guidelines for the Verse Pursuit project.
