@@ -151,7 +151,11 @@ export function useGameState(): UseGameStateReturn {
       setError(null);
       
       const newGameState = initializeGame('single', difficulty, category, 'You', 'Computer');
-      setGameState(newGameState);
+      
+      // Automatically start the first round
+      const verse = getRandomVerse(category);
+      const gameWithVerse = setupVerse(newGameState, verse);
+      setGameState(gameWithVerse);
       
       setIsLoading(false);
     } catch (err) {
@@ -224,7 +228,7 @@ export function useGameState(): UseGameStateReturn {
 
   // Computed values
   const isPlayerTurn = gameState?.players.activePlayer === 'player1';
-  const isRoundComplete = !gameState?.round.isActive;
+  const isRoundComplete = gameState ? (!gameState.round.isActive && gameState.round.currentRound > 0) : false;
   const isGameComplete = gameState 
     ? (gameState.players.player1.totalScore + gameState.players.player1.score >= 100 ||
        gameState.players.player2.totalScore + gameState.players.player2.score >= 100)

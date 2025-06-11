@@ -12,33 +12,48 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-parchment-50 to-parchment-100 flex items-center justify-center p-4">
-      <div className="text-center max-w-2xl">
+    <main 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative flex items-center justify-center p-4"
+      style={{
+        backgroundImage: `url('/assets/backgrounds/Main_menu_screen.png')`,
+      }}
+    >
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      
+      <div className="relative z-10 text-center max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-6xl md:text-7xl font-biblical text-biblical-700 mb-6">
-            Verse Pursuit
-          </h1>
+          <div className="flex items-center justify-center mb-6">
+            <img 
+              src="/assets/images/App-Icon-1024x1024@1x.png" 
+              alt="Verse Pursuit" 
+              className="w-16 h-16 md:w-20 md:h-20 mr-4"
+            />
+            <h1 className="text-5xl md:text-6xl font-biblical text-white drop-shadow-2xl">
+              Verse Pursuit
+            </h1>
+          </div>
           
-          <p className="text-xl md:text-2xl text-biblical-600 mb-8">
+          <p className="text-xl md:text-2xl text-white drop-shadow-lg mb-8 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg p-4">
             Complete Bible verses by placing word tiles in the correct order
           </p>
 
           <div className="space-y-4 mb-12">
-            <div className="flex items-center justify-center space-x-2 text-biblical-500">
+            <div className="flex items-center justify-center space-x-2 text-white bg-black bg-opacity-40 backdrop-blur-sm rounded-lg p-3">
               <span>📖</span>
-              <span>474 Bible verses across multiple categories</span>
+              <span className="text-sm md:text-base">474 Bible verses across multiple categories</span>
             </div>
-            <div className="flex items-center justify-center space-x-2 text-biblical-500">
+            <div className="flex items-center justify-center space-x-2 text-white bg-black bg-opacity-40 backdrop-blur-sm rounded-lg p-3">
               <span>🎯</span>
-              <span>Single-player mode with AI opponent</span>
+              <span className="text-sm md:text-base">Single-player mode with AI opponent</span>
             </div>
-            <div className="flex items-center justify-center space-x-2 text-biblical-500">
+            <div className="flex items-center justify-center space-x-2 text-white bg-black bg-opacity-40 backdrop-blur-sm rounded-lg p-3">
               <span>⏱️</span>
-              <span>Turn-based gameplay with hints and scoring</span>
+              <span className="text-sm md:text-base">Turn-based gameplay with hints and scoring</span>
             </div>
           </div>
 
@@ -47,12 +62,12 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowGame(true)}
-              className="px-8 py-4 bg-biblical-500 text-white text-xl font-semibold rounded-lg hover:bg-biblical-600 transition-colors shadow-lg"
+              className="px-8 py-4 bg-gradient-to-r from-biblical-600 to-biblical-700 text-white text-xl font-semibold rounded-lg hover:from-biblical-700 hover:to-biblical-800 transition-all shadow-2xl border-2 border-white border-opacity-20"
             >
-              Start Playing
+              🎮 Start Playing
             </motion.button>
 
-            <div className="text-sm text-biblical-500">
+            <div className="text-sm text-white bg-black bg-opacity-30 backdrop-blur-sm rounded-lg p-2">
               No sign-up required • Play instantly in your browser
             </div>
           </div>
@@ -65,22 +80,28 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <h3 className="text-lg font-biblical text-biblical-700 mb-3">Easy & Hard Modes</h3>
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 shadow-xl border border-white border-opacity-20">
+            <h3 className="text-lg font-biblical text-biblical-700 mb-3 flex items-center">
+              ⚡ Easy & Hard Modes
+            </h3>
             <p className="text-biblical-600 text-sm">
               Choose your difficulty level. Easy mode provides helpful word hints to get you started.
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <h3 className="text-lg font-biblical text-biblical-700 mb-3">Multiple Categories</h3>
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 shadow-xl border border-white border-opacity-20">
+            <h3 className="text-lg font-biblical text-biblical-700 mb-3 flex items-center">
+              📚 Multiple Categories
+            </h3>
             <p className="text-biblical-600 text-sm">
               Play with verses from Psalms, Famous Verses, Promises, and more biblical themes.
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <h3 className="text-lg font-biblical text-biblical-700 mb-3">Smart AI Opponent</h3>
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 shadow-xl border border-white border-opacity-20">
+            <h3 className="text-lg font-biblical text-biblical-700 mb-3 flex items-center">
+              🤖 Smart AI Opponent
+            </h3>
             <p className="text-biblical-600 text-sm">
               Challenge yourself against an AI that adapts to the difficulty level you choose.
             </p>

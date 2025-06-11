@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { getWordTileTheme, DEFAULT_THEME_KEY } from '@/utils/WordTileThemes';
 
 interface WordTileProps {
   word: string;
@@ -9,10 +10,12 @@ interface WordTileProps {
   isSelected?: boolean;
   isPlaced?: boolean;
   isDragging?: boolean;
+  isHinted?: boolean;
   onClick?: () => void;
   onDragStart?: (e: React.DragEvent) => void;
   onDragEnd?: (e: React.DragEvent) => void;
   className?: string;
+  theme?: string;
 }
 
 export const WordTile: React.FC<WordTileProps> = ({
@@ -21,26 +24,37 @@ export const WordTile: React.FC<WordTileProps> = ({
   isSelected = false,
   isPlaced = false,
   isDragging = false,
+  isHinted = false,
   onClick,
   onDragStart,
   onDragEnd,
-  className = ''
+  className = '',
+  theme = DEFAULT_THEME_KEY
 }) => {
+  const tileTheme = getWordTileTheme(theme);
+  
   const baseClasses = `
     px-3 py-2 rounded-lg border-2 cursor-pointer select-none
-    font-biblical text-sm md:text-base
+    font-biblical text-sm md:text-base font-semibold
     transition-all duration-200 ease-in-out
     shadow-md hover:shadow-lg
     min-w-[60px] text-center
   `;
 
-  const stateClasses = isSelected
-    ? 'bg-biblical-200 border-biblical-400 text-biblical-800'
-    : isPlaced
-    ? 'bg-green-100 border-green-400 text-green-800'
-    : isDragging
-    ? 'bg-biblical-100 border-biblical-300 text-biblical-700 opacity-50'
-    : 'bg-parchment-50 border-parchment-300 text-biblical-700 hover:bg-parchment-100 hover:border-parchment-400';
+  // Determine background color and text color based on state
+  let bgColor = tileTheme.default;
+  let textColor = 'white';
+  
+  if (isSelected) {
+    bgColor = tileTheme.selected;
+  } else if (isHinted) {
+    bgColor = tileTheme.hinted;
+  } else if (isPlaced) {
+    bgColor = '#22c55e'; // Green for placed tiles
+  } else if (isDragging) {
+    bgColor = tileTheme.default;
+    textColor = 'rgba(255,255,255,0.5)';
+  }
 
   const handleDragStart = (e: React.DragEvent) => {
     onDragStart?.(e);
@@ -58,7 +72,13 @@ export const WordTile: React.FC<WordTileProps> = ({
       exit={{ opacity: 0, scale: 0.8 }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className={`${baseClasses} ${stateClasses} ${className}`}
+      className={`${baseClasses} ${className}`}
+      style={{
+        backgroundColor: bgColor,
+        color: textColor,
+        borderColor: bgColor,
+        boxShadow: isSelected ? `0 0 0 3px ${tileTheme.ready}40` : undefined,
+      }}
       onClick={onClick}
       data-word={word}
       data-index={index}

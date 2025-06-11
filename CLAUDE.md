@@ -1,0 +1,1 @@
+- Commit message guidance: Add "Generated with [Claude Code](https://claude.ai/code)" and "Co-Authored-By: Claude <noreply@anthropic.com>" to commits
