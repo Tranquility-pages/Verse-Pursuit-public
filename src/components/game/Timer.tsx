@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 interface TimerProps {
   remainingTime: number;
   isWarning?: boolean;
   isPaused?: boolean;
-  onTimeUpdate?: (remainingTime: number) => void;
-  onTimeExpired?: () => void;
+  maxTime?: number;
   className?: string;
 }
 
@@ -16,38 +15,9 @@ export const Timer: React.FC<TimerProps> = ({
   remainingTime,
   isWarning = false,
   isPaused = false,
-  onTimeUpdate,
-  onTimeExpired,
+  maxTime = 30,
   className = ''
 }) => {
-  const [displayTime, setDisplayTime] = useState(remainingTime);
-
-  useEffect(() => {
-    setDisplayTime(remainingTime);
-  }, [remainingTime]);
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setDisplayTime(prev => {
-        const newTime = Math.max(0, prev - 1);
-        
-        // Notify parent of time update
-        onTimeUpdate?.(newTime);
-        
-        // Check if time expired
-        if (newTime === 0) {
-          onTimeExpired?.();
-        }
-        
-        return newTime;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isPaused, onTimeUpdate, onTimeExpired]);
-
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -55,17 +25,22 @@ export const Timer: React.FC<TimerProps> = ({
   };
 
   const getProgressPercentage = (): number => {
-    const maxTime = 30; // Default turn time
-    return (displayTime / maxTime) * 100;
+    return Math.max(0, (remainingTime / maxTime) * 100);
   };
 
+  // Determine visual state based on remaining time
+  const isCritical = remainingTime <= 5;
+  const isLow = remainingTime <= 10;
+  
   const timerClasses = `
     flex flex-col items-center justify-center
     w-20 h-20 md:w-24 md:h-24
-    rounded-full border-4
-    ${isWarning 
-      ? 'border-red-400 bg-red-50 text-red-700' 
-      : 'border-biblical-400 bg-biblical-50 text-biblical-700'
+    rounded-full border-4 transition-colors duration-300
+    ${isCritical 
+      ? 'border-red-500 bg-red-50 text-red-700' 
+      : isWarning || isLow
+      ? 'border-orange-400 bg-orange-50 text-orange-700'
+      : 'border-green-400 bg-green-50 text-green-700'
     }
     ${isPaused ? 'opacity-50' : ''}
   `;
@@ -74,11 +49,13 @@ export const Timer: React.FC<TimerProps> = ({
     <div className={`relative ${className}`}>
       {/* Background Circle */}
       <div className={timerClasses}>
-        <div className="text-lg md:text-xl font-bold font-mono">
-          {formatTime(displayTime)}
+        <div className={`text-lg md:text-xl font-bold font-mono ${
+          isCritical ? 'animate-pulse' : ''
+        }`}>
+          {formatTime(remainingTime)}
         </div>
         {isPaused && (
-          <div className="text-xs text-biblical-500">
+          <div className="text-xs opacity-70">
             PAUSED
           </div>
         )}
@@ -89,6 +66,7 @@ export const Timer: React.FC<TimerProps> = ({
         className="absolute inset-0 w-full h-full -rotate-90"
         viewBox="0 0 100 100"
       >
+        {/* Background circle */}
         <circle
           cx="50"
           cy="50"
@@ -96,17 +74,25 @@ export const Timer: React.FC<TimerProps> = ({
           fill="none"
           stroke="currentColor"
           strokeWidth="4"
-          className="text-parchment-200"
+          className="text-gray-200"
         />
+        
+        {/* Progress circle */}
         <motion.circle
           cx="50"
           cy="50"
           r="45"
           fill="none"
           stroke="currentColor"
-          strokeWidth="4"
+          strokeWidth="6"
           strokeLinecap="round"
-          className={isWarning ? 'text-red-400' : 'text-biblical-400'}
+          className={
+            isCritical 
+              ? 'text-red-500' 
+              : isWarning || isLow
+              ? 'text-orange-400'
+              : 'text-green-400'
+          }
           style={{
             strokeDasharray: '283', // 2 * π * 45
             strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`,
@@ -114,20 +100,36 @@ export const Timer: React.FC<TimerProps> = ({
           animate={{
             strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`,
           }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
         />
       </motion.svg>
 
-      {/* Warning Animation */}
-      {isWarning && !isPaused && (
+      {/* Critical warning animation */}
+      {isCritical && !isPaused && (
         <motion.div
-          className="absolute inset-0 rounded-full border-4 border-red-400"
+          className="absolute inset-0 rounded-full border-4 border-red-500"
           animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.5, 0.8, 0.5],
+            scale: [1, 1.15, 1],
+            opacity: [0.3, 0.7, 0.3],
           }}
           transition={{
-            duration: 1,
+            duration: 0.8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      )}
+
+      {/* Low time warning pulse */}
+      {isLow && !isCritical && !isPaused && (
+        <motion.div
+          className="absolute inset-0 rounded-full border-2 border-orange-400"
+          animate={{
+            scale: [1, 1.08, 1],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{
+            duration: 1.5,
             repeat: Infinity,
             ease: 'easeInOut',
           }}

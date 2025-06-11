@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PlayerState } from '@/game/types';
+import { AvatarDisplay } from './AvatarDisplay';
 
 interface ScoreDisplayProps {
   player1: PlayerState;
@@ -19,80 +20,93 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
 }) => {
   const renderPlayerScore = (player: PlayerState, playerId: 'player1' | 'player2') => {
     const isActive = activePlayer === playerId;
+    const playerLabel = playerId === 'player1' ? 'You' : 'Computer';
     
     return (
       <motion.div
         layout
         className={`
-          flex flex-col items-center p-4 rounded-lg border-2
+          relative rounded-lg border-2 p-4
           ${isActive 
-            ? 'border-biblical-400 bg-biblical-50' 
-            : 'border-parchment-300 bg-parchment-50'
+            ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-yellow-100' 
+            : 'border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100'
           }
-          transition-colors duration-200
+          transition-all duration-300
         `}
         whileHover={{ scale: 1.02 }}
+        animate={isActive ? { 
+          boxShadow: "0 4px 20px rgba(255, 215, 0, 0.3)" 
+        } : {}}
       >
-        {/* Player Name */}
-        <h3 className={`
-          text-lg font-biblical font-semibold mb-2
-          ${isActive ? 'text-biblical-700' : 'text-biblical-600'}
-        `}>
-          {player.name}
-          {isActive && (
-            <motion.span
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="ml-1 text-sm"
+        {/* Active indicator dot */}
+        {isActive && (
+          <motion.div
+            className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          />
+        )}
+
+        {/* Player Info Row */}
+        <div className="flex items-center space-x-3 mb-3">
+          <AvatarDisplay
+            avatarId={player.avatar || "1"}
+            name={player.name}
+            size={40}
+            isActive={isActive}
+          />
+          <div>
+            <h3 className={`
+              font-bold text-lg
+              ${isActive ? 'text-yellow-800' : 'text-gray-700'}
+            `}>
+              {playerLabel}
+            </h3>
+          </div>
+        </div>
+
+        {/* Scores */}
+        <div className="space-y-3">
+          {/* Round Score */}
+          <div className="text-center">
+            <div className="text-xs text-gray-500 font-medium">Round Score</div>
+            <motion.div
+              key={player.score}
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              className={`text-3xl font-bold ${isActive ? 'text-yellow-700' : 'text-gray-700'}`}
             >
-              ●
-            </motion.span>
-          )}
-        </h3>
-
-        {/* Current Round Score */}
-        <div className="text-center mb-3">
-          <div className="text-sm text-biblical-500">Round Score</div>
-          <motion.div
-            key={player.score}
-            initial={{ scale: 1.2, color: '#bf9145' }}
-            animate={{ scale: 1, color: '#734e2d' }}
-            className="text-2xl font-bold text-biblical-800"
-          >
-            {player.score}
-          </motion.div>
-        </div>
-
-        {/* Total Score */}
-        <div className="text-center mb-3">
-          <div className="text-sm text-biblical-500">Total Score</div>
-          <motion.div
-            key={player.totalScore}
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            className="text-xl font-semibold text-biblical-700"
-          >
-            {player.totalScore}
-          </motion.div>
-        </div>
-
-        {/* Game Stats */}
-        <div className="flex justify-center space-x-4 text-xs text-biblical-500">
-          <div className="text-center">
-            <div className="font-medium">{player.mistakes}</div>
-            <div>Mistakes</div>
+              {player.score}
+            </motion.div>
           </div>
-          <div className="text-center">
-            <div className="font-medium">{player.consecutiveTimeouts}</div>
-            <div>Timeouts</div>
-          </div>
-        </div>
 
-        {/* Words Remaining */}
-        <div className="mt-2 text-center">
-          <div className="text-xs text-biblical-500">Words Left</div>
-          <div className="text-sm font-medium text-biblical-600">
-            {player.words.length}
+          {/* Total Score */}
+          <div className="text-center">
+            <div className="text-xs text-gray-500 font-medium">Total Score</div>
+            <motion.div
+              key={player.totalScore}
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              className={`text-xl font-semibold ${isActive ? 'text-yellow-700' : 'text-gray-600'}`}
+            >
+              {player.totalScore}
+            </motion.div>
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex justify-between text-center border-t pt-2">
+            <div>
+              <div className="text-xs text-gray-500">Mistakes</div>
+              <div className="font-medium text-gray-700">{player.mistakes}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Timeouts</div>
+              <div className="font-medium text-gray-700">{player.consecutiveTimeouts}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Words Left</div>
+              <div className="font-medium text-gray-700">{player.words.length}</div>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -100,7 +114,7 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
   };
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto ${className}`}>
+    <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 w-full ${className}`}>
       {renderPlayerScore(player1, 'player1')}
       {renderPlayerScore(player2, 'player2')}
     </div>

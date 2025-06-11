@@ -9,6 +9,7 @@ import { PlayerHand } from './PlayerHand';
 import { Timer } from './Timer';
 import { ScoreDisplay } from './ScoreDisplay';
 import { HintDisplay } from './HintDisplay';
+import { AvatarDisplay } from './AvatarDisplay';
 import { VerseCategory, VERSE_CATEGORIES } from '@/data/verseData';
 
 interface GameScreenProps {
@@ -274,68 +275,229 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
           </div>
         </header>
 
-        {/* Top Section: Both Players' Info */}
+        {/* Game Info and Controls Section */}
         <section className="flex-shrink-0 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            
-            {/* Round Info */}
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 text-center">
-              <h3 className="text-sm font-medium text-biblical-600 mb-1">Round</h3>
-              <div className="text-2xl font-bold text-biblical-700">
-                {gameState.round.currentRound}
+          
+          {/* Mobile Layout: Stacked */}
+          <div className="block lg:hidden">
+            {/* Top Row: Round, Timer, Hints */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 text-center">
+                <h3 className="text-xs font-medium text-biblical-600 mb-1">Round</h3>
+                <div className="text-xl font-bold text-biblical-700">
+                  {gameState.round.currentRound}
+                </div>
+              </div>
+
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 flex justify-center">
+                <Timer
+                  remainingTime={gameState.turn.remainingTime}
+                  isWarning={gameState.turn.isTimerWarning}
+                  isPaused={gameState.turn.isPaused}
+                  className="scale-90"
+                />
+              </div>
+
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3">
+                <HintDisplay
+                  hintsRemaining={gameState.round.hints}
+                  onUseHint={useHintAction}
+                  onPurchaseHints={purchaseHintsAction}
+                  canUseHint={isPlayerTurn && gameState.round.hints > 0}
+                  canPurchaseHint={isPlayerTurn && gameState.players.player1.score >= 20}
+                />
               </div>
             </div>
 
-            {/* Timer */}
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
-              <Timer
-                remainingTime={gameState.turn.remainingTime}
-                isWarning={gameState.turn.isTimerWarning}
-                isPaused={gameState.turn.isPaused}
+            {/* Players Score Section */}
+            <div className="mb-4">
+              <ScoreDisplay
+                player1={gameState.players.player1}
+                player2={gameState.players.player2}
+                activePlayer={gameState.players.activePlayer}
               />
             </div>
+          </div>
 
-            {/* Hints */}
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
-              <HintDisplay
-                hintsRemaining={gameState.round.hints}
-                onUseHint={useHintAction}
-                onPurchaseHints={purchaseHintsAction}
-                canUseHint={isPlayerTurn && gameState.round.hints > 0}
-                canPurchaseHint={isPlayerTurn && gameState.players.player1.score >= 20}
-              />
+          {/* Desktop Layout: Side panels with game board in center */}
+          <div className="hidden lg:grid lg:grid-cols-12 lg:gap-6 lg:max-w-7xl lg:mx-auto">
+            
+            {/* Left Panel: Player 1 Info + Controls */}
+            <div className="lg:col-span-3 space-y-4">
+              {/* Player 1 Score */}
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <AvatarDisplay
+                    avatarId={gameState.players.player1.avatar || "1"}
+                    name={gameState.players.player1.name}
+                    size={48}
+                    isActive={gameState.players.activePlayer === 'player1'}
+                  />
+                  <div>
+                    <h3 className="font-bold text-lg text-biblical-700">You</h3>
+                    <div className="text-sm text-biblical-600">
+                      {gameState.players.player1.words.length} words left
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-2">
+                  <div>
+                    <div className="text-xs text-gray-500">Round Score</div>
+                    <div className="text-2xl font-bold text-biblical-700">
+                      {gameState.players.player1.score}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500">Total</div>
+                    <div className="text-lg font-semibold text-biblical-600">
+                      {gameState.players.player1.totalScore}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timer */}
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 flex justify-center">
+                <Timer
+                  remainingTime={gameState.turn.remainingTime}
+                  isWarning={gameState.turn.isTimerWarning}
+                  isPaused={gameState.turn.isPaused}
+                />
+              </div>
+
+              {/* Round Info */}
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 text-center">
+                <h3 className="text-sm font-medium text-biblical-600 mb-1">Round</h3>
+                <div className="text-2xl font-bold text-biblical-700">
+                  {gameState.round.currentRound}
+                </div>
+              </div>
+            </div>
+
+            {/* Center: Game Board - will be placed here */}
+            <div className="lg:col-span-6">
+              {/* Game board will go here */}
+            </div>
+
+            {/* Right Panel: Player 2 Info + Hints */}
+            <div className="lg:col-span-3 space-y-4">
+              {/* Player 2 Score */}
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <AvatarDisplay
+                    avatarId={gameState.players.player2.avatar || "2"}
+                    name={gameState.players.player2.name}
+                    size={48}
+                    isActive={gameState.players.activePlayer === 'player2'}
+                  />
+                  <div>
+                    <h3 className="font-bold text-lg text-biblical-700">Computer</h3>
+                    <div className="text-sm text-biblical-600">
+                      {gameState.players.player2.words.length} words left
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-2">
+                  <div>
+                    <div className="text-xs text-gray-500">Round Score</div>
+                    <div className="text-2xl font-bold text-biblical-700">
+                      {gameState.players.player2.score}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500">Total</div>
+                    <div className="text-lg font-semibold text-biblical-600">
+                      {gameState.players.player2.totalScore}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hints */}
+              <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+                <HintDisplay
+                  hintsRemaining={gameState.round.hints}
+                  onUseHint={useHintAction}
+                  onPurchaseHints={purchaseHintsAction}
+                  canUseHint={isPlayerTurn && gameState.round.hints > 0}
+                  canPurchaseHint={isPlayerTurn && gameState.players.player1.score >= 20}
+                />
+              </div>
+
+              {/* Computer Player Hand Preview */}
+              {gameState.players.player2.words.length > 0 && (
+                <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-biblical-600 mb-2">Computer Words</h4>
+                  <div className="grid grid-cols-2 gap-1">
+                    {gameState.players.player2.words.slice(0, 6).map((word, index) => (
+                      <div 
+                        key={index} 
+                        className="bg-gray-100 text-gray-400 text-xs p-1 rounded text-center"
+                      >
+                        {'•'.repeat(word.length)}
+                      </div>
+                    ))}
+                  </div>
+                  {gameState.players.player2.words.length > 6 && (
+                    <div className="text-xs text-gray-500 text-center mt-1">
+                      +{gameState.players.player2.words.length - 6} more
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Players Score Section */}
-        <section className="flex-shrink-0 px-4 pb-4">
-          <div className="max-w-4xl mx-auto">
-            <ScoreDisplay
-              player1={gameState.players.player1}
-              player2={gameState.players.player2}
-              activePlayer={gameState.players.activePlayer}
-            />
-          </div>
-        </section>
-
-        {/* Game Board Section - Takes remaining space */}
-        <section className="flex-1 px-4 min-h-0 flex items-center">
+        {/* Game Board Section */}
+        <section className="flex-1 min-h-0 flex items-center">
           {gameState.round.currentVerse && (
-            <div className="w-full">
-              <GameBoard
-                verse={gameState.round.currentVerse}
-                placementSlots={gameState.round.placementSlots}
-                onSlotClick={handleSlotClick}
-                onSlotDrop={handleSlotDrop}
-                showVerseReference={gameState.round.showVerseReference}
-              />
+            <div className="w-full px-4">
+              
+              {/* Mobile Layout: Centered game board */}
+              <div className="block lg:hidden">
+                <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+                  <GameBoard
+                    verse={gameState.round.currentVerse}
+                    placementSlots={gameState.round.placementSlots}
+                    onSlotClick={handleSlotClick}
+                    onSlotDrop={handleSlotDrop}
+                    showVerseReference={gameState.round.showVerseReference}
+                  />
+                </div>
+              </div>
+
+              {/* Desktop Layout: Game board in center column */}
+              <div className="hidden lg:block lg:max-w-7xl lg:mx-auto">
+                <div className="lg:grid lg:grid-cols-12 lg:gap-6">
+                  {/* Left spacer */}
+                  <div className="lg:col-span-3"></div>
+                  
+                  {/* Center: Game Board */}
+                  <div className="lg:col-span-6">
+                    <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+                      <GameBoard
+                        verse={gameState.round.currentVerse}
+                        placementSlots={gameState.round.placementSlots}
+                        onSlotClick={handleSlotClick}
+                        onSlotDrop={handleSlotDrop}
+                        showVerseReference={gameState.round.showVerseReference}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Right spacer */}
+                  <div className="lg:col-span-3"></div>
+                </div>
+              </div>
             </div>
           )}
         </section>
 
-        {/* Player Hand Section */}
-        <section className="flex-shrink-0 p-4">
+        {/* Player Hand Section - Only shown on mobile */}
+        <section className="flex-shrink-0 p-4 lg:hidden">
           <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
             <PlayerHand
               words={gameState.players.player1.words}
@@ -344,6 +506,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               onWordSelect={handleWordSelect}
               selectedWordIndex={selectedWordIndex}
             />
+          </div>
+        </section>
+
+        {/* Desktop Player Hand - Positioned at bottom */}
+        <section className="hidden lg:block flex-shrink-0 p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+              <PlayerHand
+                words={gameState.players.player1.words}
+                playerName="Your Words"
+                isActive={isPlayerTurn}
+                onWordSelect={handleWordSelect}
+                selectedWordIndex={selectedWordIndex}
+              />
+            </div>
           </div>
         </section>
 
