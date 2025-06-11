@@ -206,9 +206,15 @@ export function placeWord(
   
   const selectedWord = state.players[playerId].words[wordIndex];
   const correctWord = state.round.currentVerse?.text.split(/\s+/)[slotIndex];
-  const isCorrect = selectedWord === correctWord;
   
-  // Calculate points for correct placement
+  // Improved word validation with case-insensitive comparison and punctuation handling
+  const normalizeWord = (word: string) => {
+    return word.toLowerCase().replace(/[^\w]/g, '');
+  };
+  
+  const isCorrect = normalizeWord(selectedWord) === normalizeWord(correctWord || '');
+  
+  // Calculate points based on correctness
   let points = 0;
   if (isCorrect) {
     points = selectedWord.length;
@@ -224,11 +230,11 @@ export function placeWord(
   const newPlayerWords = [...state.players[playerId].words];
   newPlayerWords.splice(wordIndex, 1);
   
-  // Update the board slot
+  // Update the board slot - place word but only lock if correct
   const newPlacementSlots = [...state.round.placementSlots];
   newPlacementSlots[slotIndex] = {
-    word: selectedWord,
-    lockedBy: isCorrect ? playerId : null,
+    word: selectedWord, // Place the selected word (even if incorrect)
+    lockedBy: isCorrect ? playerId : null, // Only lock if correct
     highlightHint: false,
   };
   
@@ -238,7 +244,7 @@ export function placeWord(
     words: newPlayerWords,
     score: isCorrect 
       ? state.players[playerId].score + points
-      : state.players[playerId].score,
+      : Math.max(0, state.players[playerId].score - 1), // Penalty for incorrect
     mistakes: isCorrect 
       ? state.players[playerId].mistakes 
       : state.players[playerId].mistakes + 1,
@@ -250,16 +256,27 @@ export function placeWord(
     [playerId]: newPlayerState,
   };
   
-  // Check if round is complete
+  // Check if round is complete (all slots have locked words)
   const isRoundComplete = newPlacementSlots.every(slot => {
-    const hasWord = slot.word !== null;
-    const isLocked = slot.lockedBy !== null;
-    return hasWord && isLocked;
+    return slot.lockedBy !== null; // Only count locked slots
   });
   
-  // Active player logic
+  // Turn management logic:
+  // - Correct placement: player continues turn (unless round complete or single-player mode)
+  // - Incorrect placement: turn switches immediately
   const nextPlayer = playerId === 'player1' ? 'player2' : 'player1';
-  const activePlayer = isCorrect && !isRoundComplete ? playerId : nextPlayer;
+  
+  let activePlayer: 'player1' | 'player2';
+  if (isRoundComplete) {
+    // Round complete - next player starts new round
+    activePlayer = nextPlayer;
+  } else if (isCorrect && state.config.gameMode === 'multi') {
+    // Correct placement in multiplayer - player continues
+    activePlayer = playerId;
+  } else {
+    // Incorrect placement OR single-player mode - switch turns
+    activePlayer = nextPlayer;
+  }
   
   // Show verse reference when round completes
   const showVerseReference = isRoundComplete ? true : state.round.showVerseReference;
