@@ -1,12 +1,16 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true'
+
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/Verse-Pursuit-public' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/Verse-Pursuit-public' : '',
+  // Only use basePath for GitHub Pages, not Vercel
+  basePath: isGitHubPages ? '/Verse-Pursuit-public' : '',
+  assetPrefix: isGitHubPages ? '/Verse-Pursuit-public' : '',
 }
 
 module.exports = nextConfig
