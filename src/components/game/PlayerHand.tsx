@@ -70,7 +70,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
       {/* Word Tiles */}
       <div className="bg-parchment-100 rounded-lg p-4 border border-parchment-200 shadow-inner">
         <AnimatePresence mode="popLayout">
-          <div className="flex flex-wrap gap-2 justify-center min-h-[60px]">
+          <div className="flex flex-wrap gap-2 justify-center min-h-[100px]">
             {words.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -115,18 +115,6 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Instructions */}
-      {isActive && words.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mt-3"
-        >
-          <p className="text-sm text-biblical-500">
-            Click a word to select it, then click an empty slot on the board
-          </p>
-        </motion.div>
-      )}
     </div>
   );
 };

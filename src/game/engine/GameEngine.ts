@@ -214,41 +214,39 @@ export function placeWord(
   
   const isCorrect = normalizeWord(selectedWord) === normalizeWord(correctWord || '');
   
-  // Calculate points based on correctness
-  let points = 0;
-  if (isCorrect) {
-    points = selectedWord.length;
-    
-    // Check for quick placement bonus
-    const timeElapsed = Date.now() - state.turn.turnStartTime;
-    if (timeElapsed <= QUICK_PLACEMENT_TIME) {
-      points += QUICK_PLACEMENT_BONUS;
-    }
+  // REJECT INCORRECT PLACEMENTS - Do not allow incorrect words to be placed
+  if (!isCorrect) {
+    return state; // Return unchanged state - move is rejected
+  }
+  
+  // Calculate points for correct placement
+  let points = selectedWord.length;
+  
+  // Check for quick placement bonus
+  const timeElapsed = Date.now() - state.turn.turnStartTime;
+  if (timeElapsed <= QUICK_PLACEMENT_TIME) {
+    points += QUICK_PLACEMENT_BONUS;
   }
   
   // Remove word from player's hand
   const newPlayerWords = [...state.players[playerId].words];
   newPlayerWords.splice(wordIndex, 1);
   
-  // Update the board slot - place word but only lock if correct
+  // Update the board slot - only place correct words
   const newPlacementSlots = [...state.round.placementSlots];
   newPlacementSlots[slotIndex] = {
-    word: selectedWord, // Place the selected word (even if incorrect)
-    lockedBy: isCorrect ? playerId : null, // Only lock if correct
+    word: selectedWord, // Place the correct word
+    lockedBy: playerId, // Lock it immediately since it's correct
     highlightHint: false,
   };
   
-  // Update player state
+  // Update player state - only correct placements reach this point
   const newPlayerState = {
     ...state.players[playerId],
     words: newPlayerWords,
-    score: isCorrect 
-      ? state.players[playerId].score + points
-      : Math.max(0, state.players[playerId].score - 1), // Penalty for incorrect
-    mistakes: isCorrect 
-      ? state.players[playerId].mistakes 
-      : state.players[playerId].mistakes + 1,
-    consecutiveTimeouts: isCorrect ? 0 : state.players[playerId].consecutiveTimeouts,
+    score: state.players[playerId].score + points,
+    mistakes: state.players[playerId].mistakes, // No change since it's correct
+    consecutiveTimeouts: 0, // Reset on successful placement
   };
   
   const newPlayers = {
@@ -261,20 +259,18 @@ export function placeWord(
     return slot.lockedBy !== null; // Only count locked slots
   });
   
-  // Turn management logic:
-  // - Correct placement: player continues turn (unless round complete or single-player mode)
-  // - Incorrect placement: turn switches immediately
+  // Turn management logic - only correct placements reach this point
   const nextPlayer = playerId === 'player1' ? 'player2' : 'player1';
   
   let activePlayer: 'player1' | 'player2';
   if (isRoundComplete) {
     // Round complete - next player starts new round
     activePlayer = nextPlayer;
-  } else if (isCorrect && state.config.gameMode === 'multi') {
+  } else if (state.config.gameMode === 'multi') {
     // Correct placement in multiplayer - player continues
     activePlayer = playerId;
   } else {
-    // Incorrect placement OR single-player mode - switch turns
+    // Single-player mode - switch turns
     activePlayer = nextPlayer;
   }
   

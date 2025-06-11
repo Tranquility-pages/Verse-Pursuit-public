@@ -82,15 +82,11 @@ export const WordTile: React.FC<WordTileProps> = ({
       onClick={onClick}
       data-word={word}
       data-index={index}
+      draggable={!isPlaced}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
     >
-      <div
-        draggable={!isPlaced}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        className="w-full h-full"
-      >
-        {word}
-      </div>
+      {word}
     </motion.div>
   );
 };

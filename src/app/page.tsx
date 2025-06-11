@@ -12,12 +12,22 @@ export default function Home() {
       
       {/* Hero Section */}
       <section 
-        className="relative bg-cover bg-center bg-no-repeat min-h-screen flex items-center"
+        className="relative min-h-screen flex items-center"
         style={{
-          backgroundImage: `url('/assets/backgrounds/game_background_desktop.png')`,
+          background: `linear-gradient(135deg, #8B4513 0%, #D2691E 25%, #DEB887 50%, #F5DEB3 75%, #FAEBD7 100%)`,
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"></div>
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `url('/assets/backgrounds/game_background_desktop.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            mixBlendMode: 'multiply'
+          }}
+        ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
