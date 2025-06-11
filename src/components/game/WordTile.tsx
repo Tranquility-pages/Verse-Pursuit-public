@@ -42,6 +42,14 @@ export const WordTile: React.FC<WordTileProps> = ({
     ? 'bg-biblical-100 border-biblical-300 text-biblical-700 opacity-50'
     : 'bg-parchment-50 border-parchment-300 text-biblical-700 hover:bg-parchment-100 hover:border-parchment-400';
 
+  const handleDragStart = (e: React.DragEvent) => {
+    onDragStart?.(e);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    onDragEnd?.(e);
+  };
+
   return (
     <motion.div
       layout
@@ -51,14 +59,18 @@ export const WordTile: React.FC<WordTileProps> = ({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={`${baseClasses} ${stateClasses} ${className}`}
-      draggable={!isPlaced}
       onClick={onClick}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
       data-word={word}
       data-index={index}
     >
-      {word}
+      <div
+        draggable={!isPlaced}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        className="w-full h-full"
+      >
+        {word}
+      </div>
     </motion.div>
   );
 };

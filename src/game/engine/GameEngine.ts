@@ -78,7 +78,7 @@ function createInitialPlayerState(name: string): PlayerState {
 }
 
 export function setupVerse(state: GameState, verse: Verse): GameState {
-  const words = verse.text.split(/\\s+/).filter(word => word.length > 0);
+  const words = verse.text.split(/\s+/).filter(word => word.length > 0);
   const placementSlots: PlacementSlot[] = words.map(() => ({
     word: null,
     lockedBy: null,
@@ -205,7 +205,7 @@ export function placeWord(
   }
   
   const selectedWord = state.players[playerId].words[wordIndex];
-  const correctWord = state.round.currentVerse?.text.split(/\\s+/)[slotIndex];
+  const correctWord = state.round.currentVerse?.text.split(/\s+/)[slotIndex];
   const isCorrect = selectedWord === correctWord;
   
   // Calculate points for correct placement
@@ -294,7 +294,7 @@ export function placeWord(
   };
 }
 
-export function useHint(state: GameState): GameState {
+export function applyHint(state: GameState): GameState {
   if (state.round.hints <= 0 || !state.round.isActive || state.turn.isPaused) {
     return state;
   }
@@ -584,7 +584,7 @@ export class GameEngine {
         );
       
       case 'use_hint':
-        return useHint(state);
+        return applyHint(state);
       
       case 'purchase_hints':
         return purchaseHints(state, move.playerId as 'player1' | 'player2');

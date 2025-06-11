@@ -9,7 +9,7 @@ interface PlayerHandProps {
   playerName: string;
   isActive?: boolean;
   onWordSelect?: (wordIndex: number, word: string) => void;
-  selectedWordIndex?: number;
+  selectedWordIndex?: number | null;
   className?: string;
 }
 
