@@ -56,5 +56,5 @@ pids
 # Optional eslint cache
 .eslintcache
 
-# Package-lock
-package-lock.json
+# Package-lock (commented out - needed for GitHub Actions)
+# package-lock.json
