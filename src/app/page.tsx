@@ -84,21 +84,26 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
-                <div className="text-3xl mb-3">📖</div>
-                <h3 className="text-lg font-semibold text-white mb-2">474 Bible Verses</h3>
-                <p className="text-white text-sm">From Genesis to Revelation across multiple categories</p>
-              </div>
-              <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
-                <div className="text-3xl mb-3">👥</div>
-                <h3 className="text-lg font-semibold text-white mb-2">Multiplayer & Solo</h3>
-                <p className="text-white text-sm">Challenge friends or compete against AI opponents</p>
-              </div>
-              <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
-                <div className="text-3xl mb-3">🏆</div>
-                <h3 className="text-lg font-semibold text-white mb-2">Progressive Learning</h3>
-                <p className="text-white text-sm">Advance through levels as you master Scripture</p>
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-black bg-opacity-60 backdrop-blur-sm rounded-xl p-8 border-2 border-yellow-400 border-opacity-30 shadow-2xl">
+                <div className="text-center">
+                  <div className="text-5xl mb-4">💝</div>
+                  <h3 className="text-2xl font-bold text-yellow-300 mb-3">Keep Verse Pursuit Free for Everyone</h3>
+                  <p className="text-white text-lg mb-6 leading-relaxed">
+                    This is a 100% ad-free ministry project. Your support helps us continue developing this Scripture game and reaching believers worldwide.
+                  </p>
+                  <a
+                    href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black text-xl font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all shadow-2xl border-2 border-yellow-300"
+                  >
+                    💖 Support Our Ministry
+                  </a>
+                  <div className="text-yellow-200 text-sm mt-4 italic">
+                    "Freely you have received; freely give." — Matthew 10:8
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
