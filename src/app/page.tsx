@@ -36,9 +36,9 @@ export default function Home() {
           >
             <div className="flex items-center justify-center mb-8">
               <img 
-                src="/assets/images/App-Icon-1024x1024@1x.png" 
+                src="/assets/images/bible_android12.png" 
                 alt="Verse Pursuit" 
-                className="w-20 h-20 md:w-24 md:h-24 mr-6"
+                className="w-20 h-20 md:w-24 md:h-24 mr-6 rounded-2xl"
               />
               <div className="text-left">
                 <h1 className="text-5xl md:text-7xl font-biblical text-white drop-shadow-2xl">
@@ -76,7 +76,9 @@ export default function Home() {
                   📱 App Store
                 </a>
                 <a 
-                  href="#google-play"
+                  href="https://play.google.com/store/search?q=Verse%20Pursuit&c=apps"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3 bg-black bg-opacity-70 text-white rounded-lg hover:bg-opacity-90 transition-all border border-white border-opacity-20"
                 >
                   🤖 Google Play

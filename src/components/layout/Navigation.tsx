@@ -22,9 +22,9 @@ export const Navigation: React.FC = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <img 
-              src="/assets/images/App-Icon-1024x1024@1x.png" 
+              src="/assets/images/bible_android12.png" 
               alt="Verse Pursuit" 
-              className="w-10 h-10"
+              className="w-10 h-10 rounded-lg"
             />
             <div className="flex flex-col">
               <span className="text-xl font-biblical text-biblical-700">Verse Pursuit</span>

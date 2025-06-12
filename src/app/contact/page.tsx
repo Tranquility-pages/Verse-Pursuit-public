@@ -19,9 +19,9 @@ export default function Contact() {
           >
             <div className="flex items-center justify-center mb-6">
               <img 
-                src="/assets/images/App-Icon-1024x1024@1x.png" 
+                src="/assets/images/bible_android12.png" 
                 alt="Verse Pursuit" 
-                className="w-16 h-16 mr-4"
+                className="w-16 h-16 mr-4 rounded-2xl"
               />
               <h1 className="text-4xl md:text-6xl font-biblical text-biblical-700">
                 Contact Us

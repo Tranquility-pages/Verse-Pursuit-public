@@ -13,9 +13,9 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <img 
-                src="/assets/images/App-Icon-1024x1024@1x.png" 
+                src="/assets/images/bible_android12.png" 
                 alt="Verse Pursuit" 
-                className="w-12 h-12"
+                className="w-12 h-12 rounded-xl"
               />
               <div>
                 <h3 className="text-2xl font-biblical text-white">Verse Pursuit</h3>
@@ -37,7 +37,9 @@ export const Footer: React.FC = () => {
                 📱 Download on App Store
               </a>
               <a 
-                href="#google-play" 
+                href="https://play.google.com/store/search?q=Verse%20Pursuit&c=apps"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-black bg-opacity-50 hover:bg-opacity-70 px-4 py-2 rounded-lg transition-all duration-200 text-sm"
               >
                 🤖 Get it on Google Play
