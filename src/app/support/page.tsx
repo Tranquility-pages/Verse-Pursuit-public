@@ -187,11 +187,19 @@ export default function Support() {
             </div>
 
             <div className="space-y-4">
-              <button className="bg-yellow-500 text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-400 transition-colors">
-                💖 Support via Mobile App
-              </button>
+              <a 
+                href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-yellow-500 text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-400 transition-colors shadow-lg"
+              >
+                💖 Donate via PayPal
+              </a>
               <div className="text-biblical-300 text-sm">
-                Use the "Tip Jar" feature in the mobile app to support development
+                Secure donation through PayPal - every contribution helps us improve the game
+              </div>
+              <div className="text-biblical-300 text-xs mt-2">
+                You can also use the "Tip Jar" feature in the mobile app
               </div>
             </div>
           </motion.div>

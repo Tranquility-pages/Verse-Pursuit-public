@@ -44,6 +44,16 @@ export const Navigation: React.FC = () => {
               </Link>
             ))}
             
+            {/* Donation Button */}
+            <a
+              href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-4 py-2 rounded-lg font-semibold hover:from-yellow-400 hover:to-yellow-500 transition-all duration-200 shadow-lg text-sm"
+            >
+              💖 Donate
+            </a>
+            
             {/* Call to Action */}
             <Link
               href="/game"
@@ -90,9 +100,18 @@ export const Navigation: React.FC = () => {
                     {item.label}
                   </Link>
                 ))}
+                <a
+                  href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-3 py-2 rounded-lg font-semibold text-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  💖 Donate via PayPal
+                </a>
                 <Link
                   href="/game"
-                  className="block mt-3 bg-gradient-to-r from-biblical-600 to-biblical-700 text-white px-3 py-2 rounded-lg font-semibold text-center"
+                  className="block mt-2 bg-gradient-to-r from-biblical-600 to-biblical-700 text-white px-3 py-2 rounded-lg font-semibold text-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   🎮 Play Now

@@ -295,6 +295,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Support Section */}
+      <section className="py-20 bg-gradient-to-r from-yellow-50 to-amber-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="text-6xl mb-6">💝</div>
+            <h2 className="text-4xl md:text-5xl font-biblical text-biblical-700 mb-6">
+              Support Our Ministry
+            </h2>
+            <p className="text-xl text-biblical-600 mb-8 max-w-3xl mx-auto">
+              Verse Pursuit is a 100% ad-free ministry project. Your generous donations help us continue 
+              developing this Scripture game and reaching more believers worldwide.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <a
+                href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl font-bold rounded-lg hover:from-blue-500 hover:to-blue-600 transition-all shadow-xl"
+              >
+                💖 Donate via PayPal
+              </a>
+              <Link
+                href="/support"
+                className="px-6 py-3 border-2 border-biblical-500 text-biblical-700 font-semibold rounded-lg hover:bg-biblical-50 transition-all"
+              >
+                Learn More Ways to Support
+              </Link>
+            </div>
+            
+            <div className="text-biblical-500 text-sm">
+              Every donation helps us add new features, verses, and reach more Christian communities
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="py-20 bg-biblical-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

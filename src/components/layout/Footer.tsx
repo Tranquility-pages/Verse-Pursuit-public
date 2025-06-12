@@ -43,6 +43,18 @@ export const Footer: React.FC = () => {
                 🤖 Get it on Google Play
               </a>
             </div>
+            
+            {/* Donation Button */}
+            <div className="mt-6">
+              <a 
+                href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded-lg transition-all duration-200 font-semibold text-sm shadow-lg"
+              >
+                💖 Support Our Ministry
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
