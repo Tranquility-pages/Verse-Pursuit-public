@@ -74,10 +74,10 @@ const MobileGameBoard: React.FC<{
           )}
         </span>
       ) : (
-        // Filled word - Keep text white for consistency
+        // Filled word - Keep text white for consistency, increased size by 40%
         <span
           key={index}
-          className="inline-block px-2 py-1 text-white font-semibold text-lg"
+          className="inline-block px-2 py-1 text-white font-semibold text-2xl"
         >
           {slot.word}
         </span>
@@ -598,47 +598,147 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         <DesktopGameLayout />
       </div>
 
-      {/* Round Complete Modal */}
+      {/* Round Complete Summary Screen - Exact replica of original app */}
       <AnimatePresence>
         {isRoundComplete && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+              backgroundImage: "url('/assets/backgrounds/Round_summary.png')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white rounded-xl p-8 max-w-md w-full mx-4"
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-sm mx-4 h-full flex flex-col justify-center py-8"
             >
-              <div className="text-center">
-                <h2 className="text-2xl font-biblical text-biblical-700 mb-4">
-                  {isGameComplete ? 'Game Complete!' : 'Round Complete!'}
-                </h2>
-                <div className="space-y-3">
-                  {!isGameComplete && (
-                    <button
-                      onClick={handleNextRound}
-                      className="w-full py-3 bg-biblical-500 text-white rounded-lg hover:bg-biblical-600 transition-colors"
-                    >
-                      Next Round
-                    </button>
-                  )}
-                  <button
-                    onClick={handleNewGame}
-                    className="w-full py-3 border border-biblical-400 text-biblical-600 rounded-lg hover:bg-biblical-50 transition-colors"
-                  >
-                    New Game
-                  </button>
-                  <Link
-                    href="/"
-                    className="block w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-center"
-                  >
-                    Exit to Home
-                  </Link>
+              {/* Header */}
+              <div className="text-center mb-8">
+                <h1 className="text-yellow-400 text-xl font-bold mb-1">Round Summary</h1>
+                <p className="text-white text-sm opacity-80">Round {gameState.round.currentRound} of 3</p>
+              </div>
+
+              {/* Player Profiles */}
+              <div className="bg-white bg-opacity-90 rounded-xl p-4 mb-6 mx-4">
+                <div className="flex items-center justify-between">
+                  {/* Player 1 */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-green-500 border-4 border-white flex items-center justify-center mb-2">
+                      <img 
+                        src="/assets/images/Avatar/1.png" 
+                        alt="Mark" 
+                        className="w-12 h-12 rounded-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.textContent = 'M';
+                        }}
+                      />
+                      <div className="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center font-bold hidden">M</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-sm text-gray-800">Mark</div>
+                      <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold mt-1">
+                        Round: {gameState.players.player1.score}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {gameState.players.player1.totalScore} Total
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* VS */}
+                  <div className="bg-amber-700 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    VS
+                  </div>
+
+                  {/* Player 2 */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center mb-2">
+                      <img 
+                        src="/assets/images/Avatar/2.png" 
+                        alt="Scholar" 
+                        className="w-12 h-12 rounded-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.textContent = 'S';
+                        }}
+                      />
+                      <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold hidden">S</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-sm text-gray-800">Scholar</div>
+                      <div className="bg-blue-400 text-white px-2 py-1 rounded text-xs font-bold mt-1">
+                        Round: {gameState.players.player2.score}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {gameState.players.player2.totalScore} Total
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              {/* Verse Section */}
+              {gameState.round.currentVerse && (
+                <div className="bg-white bg-opacity-95 rounded-xl p-4 mb-6 mx-4">
+                  <div className="text-center">
+                    <h3 className="font-bold text-gray-800 mb-2">{gameState.round.currentVerse.reference}</h3>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      {gameState.round.currentVerse.text}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Winner Section */}
+              <div className="bg-blue-600 bg-opacity-90 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-400">
+                <div className="text-center">
+                  <h3 className="text-yellow-400 font-bold mb-2">Round Winner</h3>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center">
+                      {gameState.players.player1.score > gameState.players.player2.score ? (
+                        <img src="/assets/images/Avatar/1.png" alt="Mark" className="w-8 h-8 rounded-full" />
+                      ) : (
+                        <img src="/assets/images/Avatar/2.png" alt="Scholar" className="w-8 h-8 rounded-full" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-white font-bold">
+                        {gameState.players.player1.score > gameState.players.player2.score ? 'Mark' : 'Scholar'}
+                      </div>
+                      <div className="text-yellow-400 text-sm">
+                        Score: {Math.max(gameState.players.player1.score, gameState.players.player2.score)} points
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 mx-4">
+                {!isGameComplete && (
+                  <button
+                    onClick={handleNextRound}
+                    className="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-colors"
+                  >
+                    Next Round
+                  </button>
+                )}
+                <button
+                  onClick={handleExitGame}
+                  className="flex-1 bg-amber-800 text-white py-3 rounded-xl font-bold hover:bg-amber-900 transition-colors"
+                >
+                  Main Menu
+                </button>
               </div>
             </motion.div>
           </motion.div>
