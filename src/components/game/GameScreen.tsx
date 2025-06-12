@@ -625,7 +625,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               </div>
 
               {/* Player Profiles */}
-              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-6 mx-4">
+              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-1 mx-4" style={{ marginBottom: '-20px', zIndex: 10, position: 'relative' }}>
                 <div className="flex items-center justify-between">
                   {/* Player 1 */}
                   <div className="flex flex-col items-center">
@@ -689,7 +689,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               {/* Verse Section - Fully transparent, text on parchment */}
               {gameState.round.currentVerse && (
                 <div className="text-center mb-6 mx-4 py-8">
-                  <h3 className="font-bold text-gray-800 mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
+                  <h3 className="font-bold text-black mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
                   <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
                     {gameState.round.currentVerse.text}
                   </p>
