@@ -59,7 +59,7 @@ const MobileGameBoard: React.FC<{
           onDrop={(e) => handleDrop(e, index)}
           style={{
             borderBottom: slot.highlightHint ? '3px solid #22C55E' : '3px solid #FFA500',
-            minWidth: '100px', // One continuous underline per word
+            minWidth: '50px', // Shorter underline per word for better horizontal spacing
             height: '24px',
             display: 'inline-block',
             backgroundColor: slot.highlightHint ? 'rgba(34, 197, 94, 0.15)' : 'transparent',
@@ -74,10 +74,10 @@ const MobileGameBoard: React.FC<{
           )}
         </span>
       ) : (
-        // Filled word - EXACT match to original brown color
+        // Filled word - Keep text white for consistency
         <span
           key={index}
-          className="inline-block px-2 py-1 text-gray-800 font-semibold text-lg"
+          className="inline-block px-2 py-1 text-white font-semibold text-lg"
         >
           {slot.word}
         </span>
