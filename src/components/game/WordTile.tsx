@@ -65,13 +65,7 @@ export const WordTile: React.FC<WordTileProps> = ({
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+    <div
       className={`${baseClasses} ${className}`}
       style={{
         backgroundColor: bgColor,
@@ -86,7 +80,17 @@ export const WordTile: React.FC<WordTileProps> = ({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      {word}
-    </motion.div>
+      <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="pointer-events-none"
+      >
+        {word}
+      </motion.div>
+    </div>
   );
 };
