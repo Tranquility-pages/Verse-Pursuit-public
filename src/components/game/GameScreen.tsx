@@ -620,12 +620,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               className="w-full max-w-sm mx-4 h-full flex flex-col justify-center py-8"
             >
               {/* Header */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-4">
                 <h1 className="text-yellow-400 text-xl font-bold">Round Summary</h1>
               </div>
 
               {/* Player Profiles */}
-              <div className="bg-black bg-opacity-80 rounded-xl p-4 mb-6 mx-4">
+              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-6 mx-4">
                 <div className="flex items-center justify-between">
                   {/* Player 1 */}
                   <div className="flex flex-col items-center">
