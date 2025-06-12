@@ -621,12 +621,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
             >
               {/* Header */}
               <div className="text-center mb-8">
-                <h1 className="text-yellow-400 text-xl font-bold mb-1">Round Summary</h1>
-                <p className="text-white text-sm opacity-80">Round {gameState.round.currentRound} of 3</p>
+                <h1 className="text-yellow-400 text-xl font-bold">Round Summary</h1>
               </div>
 
               {/* Player Profiles */}
-              <div className="bg-white bg-opacity-90 rounded-xl p-4 mb-6 mx-4">
+              <div className="bg-black bg-opacity-80 rounded-xl p-4 mb-6 mx-4">
                 <div className="flex items-center justify-between">
                   {/* Player 1 */}
                   <div className="flex flex-col items-center">
@@ -644,11 +643,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                       <div className="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center font-bold hidden">M</div>
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-sm text-gray-800">Mark</div>
+                      <div className="font-bold text-sm text-white">Mark</div>
                       <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold mt-1">
                         Round: {gameState.players.player1.score}
                       </div>
-                      <div className="text-xs text-gray-600 mt-1">
+                      <div className="text-xs text-gray-300 mt-1">
                         {gameState.players.player1.totalScore} Total
                       </div>
                     </div>
@@ -675,11 +674,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                       <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold hidden">S</div>
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-sm text-gray-800">Scholar</div>
+                      <div className="font-bold text-sm text-white">Scholar</div>
                       <div className="bg-blue-400 text-white px-2 py-1 rounded text-xs font-bold mt-1">
                         Round: {gameState.players.player2.score}
                       </div>
-                      <div className="text-xs text-gray-600 mt-1">
+                      <div className="text-xs text-gray-300 mt-1">
                         {gameState.players.player2.totalScore} Total
                       </div>
                     </div>
@@ -687,20 +686,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
-              {/* Verse Section */}
+              {/* Verse Section - Fully transparent, text on parchment */}
               {gameState.round.currentVerse && (
-                <div className="bg-white bg-opacity-95 rounded-xl p-4 mb-6 mx-4">
-                  <div className="text-center">
-                    <h3 className="font-bold text-gray-800 mb-2">{gameState.round.currentVerse.reference}</h3>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      {gameState.round.currentVerse.text}
-                    </p>
-                  </div>
+                <div className="text-center mb-6 mx-4 py-8">
+                  <h3 className="font-bold text-gray-800 mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
+                  <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
+                    {gameState.round.currentVerse.text}
+                  </p>
                 </div>
               )}
 
               {/* Winner Section */}
-              <div className="bg-blue-600 bg-opacity-90 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-400">
+              <div className="bg-blue-800 bg-opacity-70 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-600">
                 <div className="text-center">
                   <h3 className="text-yellow-400 font-bold mb-2">Round Winner</h3>
                   <div className="flex items-center justify-center gap-3">
