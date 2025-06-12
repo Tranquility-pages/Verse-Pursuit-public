@@ -40,37 +40,65 @@ const MobileGameBoard: React.FC<{
     }
   };
 
+  // Create verse lines like in original app - need to group words into lines
+  const createVerseLines = () => {
+    const lines: JSX.Element[][] = [];
+    let currentLine: JSX.Element[] = [];
+    let wordsPerLine = 4; // Approximate words per line based on original
+    
+    placementSlots.forEach((slot, index) => {
+      const isEmpty = slot.word === null;
+      
+      const element = isEmpty ? (
+        // Empty slot with yellow dashed border - EXACT match to original
+        <div
+          key={index}
+          className="min-w-[50px] h-8 border-2 border-dashed border-yellow-600 rounded-md flex items-center justify-center bg-transparent cursor-pointer mx-1"
+          onClick={() => handleSlotClick(index)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => handleDrop(e, index)}
+        />
+      ) : (
+        // Filled word - EXACT match to original brown color
+        <span
+          key={index}
+          className="inline-block px-2 py-1 text-gray-800 font-semibold text-lg"
+        >
+          {slot.word}
+        </span>
+      );
+      
+      currentLine.push(element);
+      
+      // Break into lines based on punctuation or word count
+      if (slot.word && (slot.word.includes('.') || slot.word.includes(',') || slot.word.includes(';') || currentLine.length >= wordsPerLine)) {
+        lines.push([...currentLine]);
+        currentLine = [];
+        wordsPerLine = Math.max(3, 6 - lines.length); // Adjust words per line for shorter lines at end
+      }
+    });
+    
+    // Add remaining words to final line
+    if (currentLine.length > 0) {
+      lines.push(currentLine);
+    }
+    
+    return lines;
+  };
+
+  const verseLines = createVerseLines();
+
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <div className="flex flex-wrap gap-2 justify-center items-center text-lg leading-relaxed">
-        {placementSlots.map((slot, index) => {
-          const isEmpty = slot.word === null;
-          const isSystemFilled = slot.lockedBy === 'system';
-          const isPlayerFilled = slot.lockedBy === 'player1' || slot.lockedBy === 'player2';
-          
-          if (isEmpty) {
-            // Empty slot with yellow dashed border
-            return (
-              <div
-                key={index}
-                className="min-w-[60px] h-10 border-2 border-dashed border-yellow-500 rounded-lg flex items-center justify-center bg-white bg-opacity-20 cursor-pointer"
-                onClick={() => handleSlotClick(index)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDrop(e, index)}
-              />
-            );
-          } else {
-            // Filled slot with word
-            return (
-              <div
-                key={index}
-                className="px-3 py-2 bg-amber-800 text-white rounded-lg font-semibold text-center min-w-[60px]"
-              >
-                {slot.word}
-              </div>
-            );
-          }
-        })}
+    <div className="w-full max-w-sm mx-auto px-4">
+      <div className="space-y-3">
+        {verseLines.map((line, lineIndex) => (
+          <div 
+            key={lineIndex} 
+            className="flex flex-wrap items-center justify-center gap-1 text-lg leading-relaxed min-h-[40px]"
+          >
+            {line}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -253,37 +281,51 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
       }}
     >
-      {/* Top Player Profiles - Exact replica layout */}
+      {/* Top Player Profiles - EXACT replica of original app */}
       <div className="flex-shrink-0 p-4 pt-12">
         <div className="flex gap-3">
-          {/* Player 1 - Active player (green background) */}
+          {/* Player 1 - Active player (green background like original) */}
           <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
-            isPlayerTurn ? 'bg-green-600' : 'bg-gray-700'
+            isPlayerTurn ? 'bg-green-600' : 'bg-gray-600'
           }`}>
-            <AvatarDisplay
-              avatarId={gameState.players.player1.avatar || "1"}
-              name={gameState.players.player1.name}
-              size={40}
-              isActive={isPlayerTurn}
-            />
+            <div className="w-10 h-10 rounded-full bg-yellow-400 border-2 border-white flex items-center justify-center">
+              <img 
+                src="/assets/images/Avatar/1.png" 
+                alt="Mark" 
+                className="w-8 h-8 rounded-full"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling!.textContent = 'M';
+                }}
+              />
+              <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm hidden">M</div>
+            </div>
             <div className="text-white">
-              <div className="font-bold text-sm">{gameState.players.player1.name}</div>
+              <div className="font-bold text-sm">Mark</div>
               <div className="text-xs opacity-90">
                 {gameState.players.player1.score} ({gameState.players.player1.totalScore})
               </div>
             </div>
           </div>
           
-          {/* Player 2 - Computer (darker background) */}
+          {/* Player 2 - Computer (darker background like original) */}
           <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
-            !isPlayerTurn ? 'bg-green-600' : 'bg-gray-700'
+            !isPlayerTurn ? 'bg-green-600' : 'bg-gray-600'
           }`}>
-            <AvatarDisplay
-              avatarId={gameState.players.player2.avatar || "2"}
-              name={gameState.players.player2.name}
-              size={40}
-              isActive={!isPlayerTurn}
-            />
+            <div className="w-10 h-10 rounded-full bg-gray-400 border-2 border-white flex items-center justify-center">
+              <img 
+                src="/assets/images/Avatar/2.png" 
+                alt="Scholar" 
+                className="w-8 h-8 rounded-full"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling!.textContent = 'S';
+                }}
+              />
+              <div className="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center font-bold text-sm hidden">S</div>
+            </div>
             <div className="text-white">
               <div className="font-bold text-sm">Scholar</div>
               <div className="text-xs opacity-90">
@@ -294,9 +336,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Game Board - Clean verse display with yellow dashed lines */}
+      {/* Game Board - Clean verse display matching original parchment background */}
       <div className="flex-1 p-4">
-        <div className="bg-yellow-100 bg-opacity-80 rounded-xl p-6 h-full flex items-center justify-center">
+        <div className="bg-amber-50 rounded-xl p-6 h-full flex items-center justify-center" style={{backgroundColor: '#F5E6D3'}}>
           {gameState.round.currentVerse && (
             <MobileGameBoard
               verse={gameState.round.currentVerse}
@@ -308,16 +350,30 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Word Tiles - Clean rows, properly spaced */}
+      {/* Word Tiles - Clean rows, properly spaced with exact original colors */}
       <div className="flex-shrink-0 p-4">
-        <PlayerHand
-          words={gameState.players.player1.words}
-          playerName=""
-          isActive={isPlayerTurn}
-          onWordSelect={handleWordSelect}
-          selectedWordIndex={selectedWordIndex}
-          className="mobile-word-tiles"
-        />
+        <div className="flex flex-wrap gap-2 justify-center">
+          {gameState.players.player1.words.map((word, index) => (
+            <div
+              key={`${word}-${index}`}
+              className={`px-3 py-2 rounded-lg font-bold text-white cursor-pointer transition-all ${
+                selectedWordIndex === index 
+                  ? 'bg-red-700 shadow-lg' 
+                  : 'bg-red-800 hover:bg-red-700'
+              }`}
+              style={{ backgroundColor: selectedWordIndex === index ? '#7F1D1D' : '#991B1B' }}
+              onClick={() => handleWordSelect(index)}
+              onDragStart={(e) => {
+                e.dataTransfer.setData('text/plain', word);
+                e.dataTransfer.setData('wordIndex', index.toString());
+                e.dataTransfer.effectAllowed = 'move';
+              }}
+              draggable={isPlayerTurn}
+            >
+              {word}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Bottom Buttons - Hint and Menu side by side */}
