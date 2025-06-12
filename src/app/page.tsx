@@ -98,7 +98,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="inline-block px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black text-xl font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all shadow-2xl border-2 border-yellow-300"
                   >
-                    💖 Support Our Ministry
+                    💖 Support the Project
                   </a>
                   <div className="text-yellow-200 text-sm mt-4 italic">
                     "Freely you have received; freely give." — Matthew 10:8
@@ -310,7 +310,7 @@ export default function Home() {
           >
             <div className="text-6xl mb-6">💝</div>
             <h2 className="text-4xl md:text-5xl font-biblical text-biblical-700 mb-6">
-              Support Our Ministry
+              Support Our Work
             </h2>
             <p className="text-xl text-biblical-600 mb-8 max-w-3xl mx-auto">
               Verse Pursuit is a 100% ad-free ministry project. Your generous donations help us continue 
