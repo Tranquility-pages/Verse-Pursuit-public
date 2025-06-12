@@ -50,13 +50,19 @@ const MobileGameBoard: React.FC<{
       const isEmpty = slot.word === null;
       
       const element = isEmpty ? (
-        // Empty slot with yellow dashed border - EXACT match to original
-        <div
+        // Empty slot - Just yellow dashes like original, NO container boxes
+        <span
           key={index}
-          className="min-w-[50px] h-8 border-2 border-dashed border-yellow-600 rounded-md flex items-center justify-center bg-transparent cursor-pointer mx-1"
+          className="inline-block cursor-pointer mx-1"
           onClick={() => handleSlotClick(index)}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => handleDrop(e, index)}
+          style={{
+            borderBottom: '3px dashed #DAA520',
+            minWidth: '50px',
+            height: '24px',
+            display: 'inline-block'
+          }}
         />
       ) : (
         // Filled word - EXACT match to original brown color
@@ -281,12 +287,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
       }}
     >
-      {/* Top Player Profiles - EXACT replica of original app */}
+      {/* Top Player Profiles - Translucent/50% transparent like original */}
       <div className="flex-shrink-0 p-4 pt-12">
         <div className="flex gap-3">
-          {/* Player 1 - Active player (green background like original) */}
+          {/* Player 1 - Active player with 50% transparency */}
           <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
-            isPlayerTurn ? 'bg-green-600' : 'bg-gray-600'
+            isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
           }`}>
             <div className="w-10 h-10 rounded-full bg-yellow-400 border-2 border-white flex items-center justify-center">
               <img 
@@ -309,9 +315,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
             </div>
           </div>
           
-          {/* Player 2 - Computer (darker background like original) */}
+          {/* Player 2 - Computer with 50% transparency */}
           <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
-            !isPlayerTurn ? 'bg-green-600' : 'bg-gray-600'
+            !isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
           }`}>
             <div className="w-10 h-10 rounded-full bg-gray-400 border-2 border-white flex items-center justify-center">
               <img 
@@ -336,9 +342,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Game Board - Clean verse display matching original parchment background */}
+      {/* Game Board - Transparent dark overlay like original */}
       <div className="flex-1 p-4">
-        <div className="bg-amber-50 rounded-xl p-6 h-full flex items-center justify-center" style={{backgroundColor: '#F5E6D3'}}>
+        <div className="bg-black bg-opacity-20 rounded-xl p-6 h-full flex items-center justify-center">
           {gameState.round.currentVerse && (
             <MobileGameBoard
               verse={gameState.round.currentVerse}
@@ -356,12 +362,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
           {gameState.players.player1.words.map((word, index) => (
             <div
               key={`${word}-${index}`}
-              className={`px-3 py-2 rounded-lg font-bold text-white cursor-pointer transition-all ${
+              className={`px-3 py-2 rounded-lg font-bold cursor-pointer transition-all ${
                 selectedWordIndex === index 
-                  ? 'bg-red-700 shadow-lg' 
-                  : 'bg-red-800 hover:bg-red-700'
+                  ? 'bg-yellow-400 text-black shadow-lg transform scale-105' 
+                  : 'bg-red-800 text-white hover:bg-red-700'
               }`}
-              style={{ backgroundColor: selectedWordIndex === index ? '#7F1D1D' : '#991B1B' }}
+              style={{ 
+                backgroundColor: selectedWordIndex === index ? '#FBBF24' : '#991B1B',
+                color: selectedWordIndex === index ? '#000000' : '#FFFFFF'
+              }}
               onClick={() => handleWordSelect(index)}
               onDragStart={(e) => {
                 e.dataTransfer.setData('text/plain', word);
