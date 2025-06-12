@@ -38,3 +38,73 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Mobile-specific word tiles styling to match original app exactly */
+.mobile-word-tiles .min-h-\[100px\] {
+  min-height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.mobile-word-tiles .flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-word-tiles .bg-parchment-100 {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Custom mobile gameboard styling */
+@media (max-width: 1023px) {
+  .mobile-gameboard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+  }
+  
+  .mobile-gameboard .verse-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+  }
+  
+  .mobile-gameboard .verse-word {
+    padding: 8px 12px;
+    background: #8B4513;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .mobile-gameboard .verse-slot {
+    min-width: 80px;
+    height: 40px;
+    border: 2px dashed #DAA520;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .mobile-gameboard .verse-slot.filled {
+    border: 2px solid #8B4513;
+    background: #8B4513;
+    color: white;
+    font-weight: bold;
+  }
+}

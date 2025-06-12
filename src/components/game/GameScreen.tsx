@@ -11,10 +11,70 @@ import { ScoreDisplay } from './ScoreDisplay';
 import { HintDisplay } from './HintDisplay';
 import { AvatarDisplay } from './AvatarDisplay';
 import { VerseCategory, VERSE_CATEGORIES } from '@/data/verseData';
+import { PlacementSlot, Verse } from '@/game/types';
 
 interface GameScreenProps {
   onBackToMenu?: () => void;
 }
+
+// Mobile-specific GameBoard component that matches original app exactly
+const MobileGameBoard: React.FC<{
+  verse: Verse;
+  placementSlots: PlacementSlot[];
+  onSlotClick?: (slotIndex: number) => void;
+  onSlotDrop?: (slotIndex: number, word: string, wordIndex: number) => void;
+}> = ({ verse, placementSlots, onSlotClick, onSlotDrop }) => {
+  const words = verse.text.split(/\s+/);
+  
+  const handleSlotClick = (index: number) => {
+    if (onSlotClick) onSlotClick(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, slotIndex: number) => {
+    e.preventDefault();
+    const word = e.dataTransfer.getData('text/plain');
+    const wordIndex = parseInt(e.dataTransfer.getData('wordIndex'));
+    
+    if (onSlotDrop && word && !isNaN(wordIndex)) {
+      onSlotDrop(slotIndex, word, wordIndex);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-sm mx-auto">
+      <div className="flex flex-wrap gap-2 justify-center items-center text-lg leading-relaxed">
+        {placementSlots.map((slot, index) => {
+          const isEmpty = slot.word === null;
+          const isSystemFilled = slot.lockedBy === 'system';
+          const isPlayerFilled = slot.lockedBy === 'player1' || slot.lockedBy === 'player2';
+          
+          if (isEmpty) {
+            // Empty slot with yellow dashed border
+            return (
+              <div
+                key={index}
+                className="min-w-[60px] h-10 border-2 border-dashed border-yellow-500 rounded-lg flex items-center justify-center bg-white bg-opacity-20 cursor-pointer"
+                onClick={() => handleSlotClick(index)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => handleDrop(e, index)}
+              />
+            );
+          } else {
+            // Filled slot with word
+            return (
+              <div
+                key={index}
+                className="px-3 py-2 bg-amber-800 text-white rounded-lg font-semibold text-center min-w-[60px]"
+              >
+                {slot.word}
+              </div>
+            );
+          }
+        })}
+      </div>
+    </div>
+  );
+};
 
 export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
   const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
@@ -82,88 +142,102 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
 
   // Loading state
   if (isLoading) {
-    return React.createElement('div', {
-      className: 'flex items-center justify-center min-h-screen bg-parchment-100'
-    }, React.createElement(motion.div, {
-      animate: { rotate: 360 },
-      transition: { duration: 2, repeat: Infinity, ease: 'linear' },
-      className: 'w-8 h-8 border-4 border-biblical-400 border-t-transparent rounded-full'
-    }));
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-parchment-100">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className="w-8 h-8 border-4 border-biblical-400 border-t-transparent rounded-full"
+        />
+      </div>
+    );
   }
 
   // Error state
   if (error) {
-    return React.createElement('div', {
-      className: 'flex items-center justify-center min-h-screen bg-parchment-100'
-    }, React.createElement('div', {
-      className: 'text-center bg-white p-8 rounded-lg shadow-lg'
-    }, 
-      React.createElement('p', { className: 'text-red-600 mb-4' }, error),
-      React.createElement('div', { className: 'flex gap-4 justify-center' },
-        React.createElement('button', {
-          onClick: () => window.location.reload(),
-          className: 'px-4 py-2 bg-biblical-500 text-white rounded-lg hover:bg-biblical-600'
-        }, 'Retry'),
-        React.createElement(Link, {
-          href: '/',
-          className: 'px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600'
-        }, 'Back to Home')
-      )
-    ));
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-parchment-100">
+        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+          <p className="text-red-600 mb-4">{error}</p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-biblical-500 text-white rounded-lg hover:bg-biblical-600"
+            >
+              Retry
+            </button>
+            <Link
+              href="/"
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            >
+              Back to Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Game setup screen
   if (showSetup) {
-    return React.createElement('div', {
-      className: 'min-h-screen bg-cover bg-center bg-no-repeat relative flex items-center justify-center p-4',
-      style: {
-        backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
-      }
-    },
-      React.createElement('div', { className: 'absolute inset-0 bg-black bg-opacity-40' }),
-      React.createElement(motion.div, {
-        initial: { opacity: 0, scale: 0.9 },
-        animate: { opacity: 1, scale: 1 },
-        className: 'relative z-10 bg-gradient-to-b from-yellow-50 to-amber-50 rounded-2xl shadow-2xl p-8 w-full max-w-lg border-4 border-yellow-400'
-      },
-        React.createElement('div', { className: 'text-center mb-8' },
-          React.createElement('h1', { className: 'text-2xl font-biblical text-yellow-800 mb-2' }, 'Verse Pursuit'),
-          React.createElement('p', { className: 'text-sm text-yellow-700 italic' }, '"Pursue. Learn. Grow."')
-        ),
-        React.createElement('div', { className: 'mb-6' },
-          React.createElement('h3', { className: 'text-lg font-bold text-yellow-800 mb-4 text-center' }, 'Choose Difficulty'),
-          React.createElement('div', { className: 'grid grid-cols-2 gap-3' },
-            React.createElement('button', {
-              onClick: () => setSelectedDifficulty('easy'),
-              className: selectedDifficulty === 'easy' 
-                ? 'p-4 rounded-xl border-2 border-yellow-500 bg-yellow-100 shadow-lg text-center'
-                : 'p-4 rounded-xl border-2 border-yellow-300 bg-white text-center hover:border-yellow-400'
-            },
-              React.createElement('div', { className: 'text-lg font-bold text-yellow-800 mb-1' }, 'Easy'),
-              React.createElement('div', { className: 'text-xs text-yellow-600' }, '3 pre-filled words')
-            ),
-            React.createElement('button', {
-              onClick: () => setSelectedDifficulty('hard'),
-              className: selectedDifficulty === 'hard' 
-                ? 'p-4 rounded-xl border-2 border-yellow-500 bg-yellow-100 shadow-lg text-center'
-                : 'p-4 rounded-xl border-2 border-yellow-300 bg-white text-center hover:border-yellow-400'
-            },
-              React.createElement('div', { className: 'text-lg font-bold text-yellow-800 mb-1' }, 'Hard'),
-              React.createElement('div', { className: 'text-xs text-yellow-600' }, 'No pre-filled words')
-            )
-          )
-        ),
-        React.createElement('div', { className: 'space-y-3' },
-          React.createElement('button', {
-            onClick: handleStartGame,
-            className: 'w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-lg font-bold rounded-xl shadow-lg hover:from-yellow-400 hover:to-amber-400 transition-all border-2 border-yellow-600'
-          }, '🎮 Start Game'),
-          React.createElement(Link, {
-            href: '/',
-            className: 'block w-full py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-semibold rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all text-center border-2 border-gray-300'
-          }, '← Back to Home')
-        )
-      )
+    return (
+      <div 
+        className="min-h-screen bg-cover bg-center bg-no-repeat relative flex items-center justify-center p-4"
+        style={{
+          backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
+        }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative z-10 bg-gradient-to-b from-yellow-50 to-amber-50 rounded-2xl shadow-2xl p-8 w-full max-w-lg border-4 border-yellow-400"
+        >
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-biblical text-yellow-800 mb-2">Verse Pursuit</h1>
+            <p className="text-sm text-yellow-700 italic">"Pursue. Learn. Grow."</p>
+          </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-yellow-800 mb-4 text-center">Choose Difficulty</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setSelectedDifficulty('easy')}
+                className={selectedDifficulty === 'easy' 
+                  ? 'p-4 rounded-xl border-2 border-yellow-500 bg-yellow-100 shadow-lg text-center'
+                  : 'p-4 rounded-xl border-2 border-yellow-300 bg-white text-center hover:border-yellow-400'
+                }
+              >
+                <div className="text-lg font-bold text-yellow-800 mb-1">Easy</div>
+                <div className="text-xs text-yellow-600">3 pre-filled words</div>
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty('hard')}
+                className={selectedDifficulty === 'hard' 
+                  ? 'p-4 rounded-xl border-2 border-yellow-500 bg-yellow-100 shadow-lg text-center'
+                  : 'p-4 rounded-xl border-2 border-yellow-300 bg-white text-center hover:border-yellow-400'
+                }
+              >
+                <div className="text-lg font-bold text-yellow-800 mb-1">Hard</div>
+                <div className="text-xs text-yellow-600">No pre-filled words</div>
+              </button>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={handleStartGame}
+              className="w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-lg font-bold rounded-xl shadow-lg hover:from-yellow-400 hover:to-amber-400 transition-all border-2 border-yellow-600"
+            >
+              🎮 Start Game
+            </button>
+            <Link
+              href="/"
+              className="block w-full py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-semibold rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all text-center border-2 border-gray-300"
+            >
+              ← Back to Home
+            </Link>
+          </div>
+        </motion.div>
+      </div>
     );
   }
 
@@ -171,178 +245,311 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
     return null;
   }
 
-  // Main Game Screen - using React.createElement to avoid JSX parsing issues
-  return React.createElement('div', {
-    className: 'h-screen overflow-hidden bg-cover bg-center bg-no-repeat relative',
-    style: {
-      backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
-    }
-  },
-    React.createElement('div', { className: 'absolute inset-0 bg-black bg-opacity-20' }),
-    React.createElement('div', { className: 'relative z-10 h-full flex flex-col' },
-      
-      // Header
-      React.createElement('header', { className: 'flex-shrink-0 bg-black bg-opacity-30 backdrop-blur-sm p-4' },
-        React.createElement('div', { className: 'flex justify-between items-center' },
-          React.createElement('div', { className: 'flex items-center' },
-            React.createElement('h1', { className: 'text-xl font-biblical text-white' }, 'Verse Pursuit')
-          ),
-          React.createElement('div', { className: 'flex items-center gap-3' },
-            React.createElement('button', {
-              onClick: handleNewGame,
-              className: 'px-4 py-2 bg-biblical-600 text-white rounded-lg hover:bg-biblical-700 transition-colors text-sm'
-            }, 'New Game'),
-            React.createElement('button', {
-              onClick: handleExitGame,
-              className: 'px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm'
-            }, 'Exit')
-          )
-        )
-      ),
+  // MOBILE LAYOUT - EXACT REPLICA OF ORIGINAL APP
+  const MobileGameLayout = () => (
+    <div 
+      className="h-screen flex flex-col bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
+      }}
+    >
+      {/* Top Player Profiles - Exact replica layout */}
+      <div className="flex-shrink-0 p-4 pt-12">
+        <div className="flex gap-3">
+          {/* Player 1 - Active player (green background) */}
+          <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
+            isPlayerTurn ? 'bg-green-600' : 'bg-gray-700'
+          }`}>
+            <AvatarDisplay
+              avatarId={gameState.players.player1.avatar || "1"}
+              name={gameState.players.player1.name}
+              size={40}
+              isActive={isPlayerTurn}
+            />
+            <div className="text-white">
+              <div className="font-bold text-sm">{gameState.players.player1.name}</div>
+              <div className="text-xs opacity-90">
+                {gameState.players.player1.score} ({gameState.players.player1.totalScore})
+              </div>
+            </div>
+          </div>
+          
+          {/* Player 2 - Computer (darker background) */}
+          <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
+            !isPlayerTurn ? 'bg-green-600' : 'bg-gray-700'
+          }`}>
+            <AvatarDisplay
+              avatarId={gameState.players.player2.avatar || "2"}
+              name={gameState.players.player2.name}
+              size={40}
+              isActive={!isPlayerTurn}
+            />
+            <div className="text-white">
+              <div className="font-bold text-sm">Scholar</div>
+              <div className="text-xs opacity-90">
+                {gameState.players.player2.score} ({gameState.players.player2.totalScore})
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      // Desktop Player Profiles - Only show on larger screens
-      React.createElement('section', { className: 'hidden lg:flex lg:justify-between lg:items-start lg:p-4 lg:gap-4' },
-        // Player 1 Profile with integrated timer
-        React.createElement('div', { className: 'bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64' },
-          React.createElement('div', { className: 'flex items-center space-x-3 mb-3' },
-            React.createElement(AvatarDisplay, {
-              avatarId: gameState.players.player1.avatar || "1",
-              name: gameState.players.player1.name,
-              size: 48,
-              isActive: gameState.players.activePlayer === 'player1'
-            }),
-            React.createElement('div', { className: 'flex-1' },
-              React.createElement('h3', { className: 'font-bold text-lg text-biblical-700' }, 'You'),
-              React.createElement('div', { className: 'text-sm text-biblical-600' }, gameState.players.player1.words.length + ' words left')
-            ),
-            // Timer integrated here
-            React.createElement('div', { className: 'flex-shrink-0' },
-              React.createElement(Timer, {
-                remainingTime: gameState.turn.remainingTime,
-                isWarning: gameState.turn.isTimerWarning,
-                isPaused: gameState.turn.isPaused,
-                className: 'scale-75'
-              })
-            )
-          ),
-          React.createElement('div', { className: 'text-center space-y-2' },
-            React.createElement('div', {},
-              React.createElement('div', { className: 'text-xs text-gray-500' }, 'Round Score'),
-              React.createElement('div', { className: 'text-2xl font-bold text-biblical-700' }, gameState.players.player1.score)
-            ),
-            React.createElement('div', {},
-              React.createElement('div', { className: 'text-xs text-gray-500' }, 'Total'),
-              React.createElement('div', { className: 'text-lg font-semibold text-biblical-600' }, gameState.players.player1.totalScore)
-            )
-          )
-        ),
+      {/* Game Board - Clean verse display with yellow dashed lines */}
+      <div className="flex-1 p-4">
+        <div className="bg-yellow-100 bg-opacity-80 rounded-xl p-6 h-full flex items-center justify-center">
+          {gameState.round.currentVerse && (
+            <MobileGameBoard
+              verse={gameState.round.currentVerse}
+              placementSlots={gameState.round.placementSlots}
+              onSlotClick={handleSlotClick}
+              onSlotDrop={handleSlotDrop}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Word Tiles - Clean rows, properly spaced */}
+      <div className="flex-shrink-0 p-4">
+        <PlayerHand
+          words={gameState.players.player1.words}
+          playerName=""
+          isActive={isPlayerTurn}
+          onWordSelect={handleWordSelect}
+          selectedWordIndex={selectedWordIndex}
+          className="mobile-word-tiles"
+        />
+      </div>
+
+      {/* Bottom Buttons - Hint and Menu side by side */}
+      <div className="flex-shrink-0 p-4 pb-8">
+        <div className="flex gap-3">
+          {/* Hint Button - Green with location icon */}
+          <button
+            onClick={useHintAction}
+            disabled={!isPlayerTurn || gameState.round.hints <= 0}
+            className="flex-1 bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <span>📍</span>
+            Hint
+          </button>
+          
+          {/* Menu Button - Brown with hamburger icon */}
+          <button
+            onClick={handleExitGame}
+            className="flex-1 bg-amber-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2"
+          >
+            <span>☰</span>
+            Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // DESKTOP LAYOUT - Current layout (you said it's acceptable)
+  const DesktopGameLayout = () => (
+    <div 
+      className="h-screen overflow-hidden bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
+      }}
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+      <div className="relative z-10 h-full flex flex-col">
         
-        // Player 2 Profile
-        React.createElement('div', { className: 'bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64' },
-          React.createElement('div', { className: 'flex items-center space-x-3 mb-3' },
-            React.createElement(AvatarDisplay, {
-              avatarId: gameState.players.player2.avatar || "2",
-              name: gameState.players.player2.name,
-              size: 48,
-              isActive: gameState.players.activePlayer === 'player2'
-            }),
-            React.createElement('div', {},
-              React.createElement('h3', { className: 'font-bold text-lg text-biblical-700' }, 'Computer'),
-              React.createElement('div', { className: 'text-sm text-biblical-600' }, gameState.players.player2.words.length + ' words left')
-            )
-          ),
-          React.createElement('div', { className: 'text-center space-y-2' },
-            React.createElement('div', {},
-              React.createElement('div', { className: 'text-xs text-gray-500' }, 'Round Score'),
-              React.createElement('div', { className: 'text-2xl font-bold text-biblical-700' }, gameState.players.player2.score)
-            ),
-            React.createElement('div', {},
-              React.createElement('div', { className: 'text-xs text-gray-500' }, 'Total'),
-              React.createElement('div', { className: 'text-lg font-semibold text-biblical-600' }, gameState.players.player2.totalScore)
-            )
-          )
-        )
-      ),
+        {/* Header */}
+        <header className="flex-shrink-0 bg-black bg-opacity-30 backdrop-blur-sm p-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <h1 className="text-xl font-biblical text-white">Verse Pursuit</h1>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleNewGame}
+                className="px-4 py-2 bg-biblical-600 text-white rounded-lg hover:bg-biblical-700 transition-colors text-sm"
+              >
+                New Game
+              </button>
+              <button
+                onClick={handleExitGame}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+              >
+                Exit
+              </button>
+            </div>
+          </div>
+        </header>
 
-      // Game Board Section
-      React.createElement('section', { className: 'flex-1 min-h-0 flex items-center' },
-        gameState.round.currentVerse && React.createElement('div', { className: 'w-full px-4' },
-          React.createElement('div', { className: 'bg-white bg-opacity-95 backdrop-blur-sm rounded-lg p-4 shadow-lg' },
-            React.createElement(GameBoard, {
-              verse: gameState.round.currentVerse,
-              placementSlots: gameState.round.placementSlots,
-              onSlotClick: handleSlotClick,
-              onSlotDrop: handleSlotDrop,
-              showVerseReference: gameState.round.showVerseReference
-            })
-          )
-        )
-      ),
+        {/* Desktop Player Profiles - Only show on larger screens */}
+        <section className="flex justify-between items-start p-4 gap-4">
+          {/* Player 1 Profile with integrated timer */}
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64">
+            <div className="flex items-center space-x-3 mb-3">
+              <AvatarDisplay
+                avatarId={gameState.players.player1.avatar || "1"}
+                name={gameState.players.player1.name}
+                size={48}
+                isActive={gameState.players.activePlayer === 'player1'}
+              />
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-biblical-700">You</h3>
+                <div className="text-sm text-biblical-600">{gameState.players.player1.words.length} words left</div>
+              </div>
+              {/* Timer integrated here */}
+              <div className="flex-shrink-0">
+                <Timer
+                  remainingTime={gameState.turn.remainingTime}
+                  isWarning={gameState.turn.isTimerWarning}
+                  isPaused={gameState.turn.isPaused}
+                  className="scale-75"
+                />
+              </div>
+            </div>
+            <div className="text-center space-y-2">
+              <div>
+                <div className="text-xs text-gray-500">Round Score</div>
+                <div className="text-2xl font-bold text-biblical-700">{gameState.players.player1.score}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">Total</div>
+                <div className="text-lg font-semibold text-biblical-600">{gameState.players.player1.totalScore}</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Player 2 Profile */}
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64">
+            <div className="flex items-center space-x-3 mb-3">
+              <AvatarDisplay
+                avatarId={gameState.players.player2.avatar || "2"}
+                name={gameState.players.player2.name}
+                size={48}
+                isActive={gameState.players.activePlayer === 'player2'}
+              />
+              <div>
+                <h3 className="font-bold text-lg text-biblical-700">Computer</h3>
+                <div className="text-sm text-biblical-600">{gameState.players.player2.words.length} words left</div>
+              </div>
+            </div>
+            <div className="text-center space-y-2">
+              <div>
+                <div className="text-xs text-gray-500">Round Score</div>
+                <div className="text-2xl font-bold text-biblical-700">{gameState.players.player2.score}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">Total</div>
+                <div className="text-lg font-semibold text-biblical-600">{gameState.players.player2.totalScore}</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      // Player Hand Section with integrated hints
-      React.createElement('section', { className: 'flex-shrink-0 p-4' },
-        React.createElement('div', { className: 'bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4' },
-          // Hints integrated into player hand header
-          React.createElement('div', { className: 'flex justify-between items-center mb-4' },
-            React.createElement('h3', { className: 'text-lg font-semibold text-biblical-700' }, 
-              isPlayerTurn ? 'Your Turn' : 'Computer\'s Turn'
-            ),
-            React.createElement('div', { className: 'flex items-center gap-2' },
-              React.createElement(HintDisplay, {
-                hintsRemaining: gameState.round.hints,
-                onUseHint: useHintAction,
-                onPurchaseHints: purchaseHintsAction,
-                canUseHint: isPlayerTurn && gameState.round.hints > 0,
-                canPurchaseHint: isPlayerTurn && gameState.players.player1.score >= 20
-              })
-            )
-          ),
-          React.createElement(PlayerHand, {
-            words: gameState.players.player1.words,
-            playerName: gameState.players.player1.name,
-            isActive: isPlayerTurn,
-            onWordSelect: handleWordSelect,
-            selectedWordIndex: selectedWordIndex
-          })
-        )
-      )
-    ),
+        {/* Game Board Section */}
+        <section className="flex-1 min-h-0 flex items-center">
+          {gameState.round.currentVerse && (
+            <div className="w-full px-4">
+              <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+                <GameBoard
+                  verse={gameState.round.currentVerse}
+                  placementSlots={gameState.round.placementSlots}
+                  onSlotClick={handleSlotClick}
+                  onSlotDrop={handleSlotDrop}
+                  showVerseReference={gameState.round.showVerseReference}
+                />
+              </div>
+            </div>
+          )}
+        </section>
 
-    // Round Complete Modal
-    React.createElement(AnimatePresence, {},
-      isRoundComplete && React.createElement(motion.div, {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        className: 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
-      },
-        React.createElement(motion.div, {
-          initial: { scale: 0.8, opacity: 0 },
-          animate: { scale: 1, opacity: 1 },
-          exit: { scale: 0.8, opacity: 0 },
-          className: 'bg-white rounded-xl p-8 max-w-md w-full mx-4'
-        },
-          React.createElement('div', { className: 'text-center' },
-            React.createElement('h2', { className: 'text-2xl font-biblical text-biblical-700 mb-4' },
-              isGameComplete ? 'Game Complete!' : 'Round Complete!'
-            ),
-            React.createElement('div', { className: 'space-y-3' },
-              !isGameComplete && React.createElement('button', {
-                onClick: handleNextRound,
-                className: 'w-full py-3 bg-biblical-500 text-white rounded-lg hover:bg-biblical-600 transition-colors'
-              }, 'Next Round'),
-              React.createElement('button', {
-                onClick: handleNewGame,
-                className: 'w-full py-3 border border-biblical-400 text-biblical-600 rounded-lg hover:bg-biblical-50 transition-colors'
-              }, 'New Game'),
-              React.createElement(Link, {
-                href: '/',
-                className: 'block w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-center'
-              }, 'Exit to Home')
-            )
-          )
-        )
-      )
-    )
+        {/* Player Hand Section with integrated hints */}
+        <section className="flex-shrink-0 p-4">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
+            {/* Hints integrated into player hand header */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-biblical-700">
+                {isPlayerTurn ? 'Your Turn' : 'Computer\'s Turn'}
+              </h3>
+              <div className="flex items-center gap-2">
+                <HintDisplay
+                  hintsRemaining={gameState.round.hints}
+                  onUseHint={useHintAction}
+                  onPurchaseHints={purchaseHintsAction}
+                  canUseHint={isPlayerTurn && gameState.round.hints > 0}
+                  canPurchaseHint={isPlayerTurn && gameState.players.player1.score >= 20}
+                />
+              </div>
+            </div>
+            <PlayerHand
+              words={gameState.players.player1.words}
+              playerName={gameState.players.player1.name}
+              isActive={isPlayerTurn}
+              onWordSelect={handleWordSelect}
+              selectedWordIndex={selectedWordIndex}
+            />
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile Layout - Show only on small screens */}
+      <div className="block lg:hidden">
+        <MobileGameLayout />
+      </div>
+      
+      {/* Desktop Layout - Show only on large screens */}
+      <div className="hidden lg:block">
+        <DesktopGameLayout />
+      </div>
+
+      {/* Round Complete Modal */}
+      <AnimatePresence>
+        {isRoundComplete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-xl p-8 max-w-md w-full mx-4"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl font-biblical text-biblical-700 mb-4">
+                  {isGameComplete ? 'Game Complete!' : 'Round Complete!'}
+                </h2>
+                <div className="space-y-3">
+                  {!isGameComplete && (
+                    <button
+                      onClick={handleNextRound}
+                      className="w-full py-3 bg-biblical-500 text-white rounded-lg hover:bg-biblical-600 transition-colors"
+                    >
+                      Next Round
+                    </button>
+                  )}
+                  <button
+                    onClick={handleNewGame}
+                    className="w-full py-3 border border-biblical-400 text-biblical-600 rounded-lg hover:bg-biblical-50 transition-colors"
+                  >
+                    New Game
+                  </button>
+                  <Link
+                    href="/"
+                    className="block w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-center"
+                  >
+                    Exit to Home
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
