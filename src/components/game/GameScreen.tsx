@@ -291,13 +291,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
   // MOBILE LAYOUT - EXACT REPLICA OF ORIGINAL APP
   const MobileGameLayout = () => (
     <div 
-      className="h-screen flex flex-col bg-cover bg-center bg-no-repeat relative"
+      className="h-screen flex flex-col bg-cover bg-center bg-no-repeat relative overflow-hidden"
       style={{
         backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
       }}
     >
       {/* Top Player Profiles - Translucent/50% transparent like original */}
-      <div className="flex-shrink-0 p-4 pt-12">
+      <div className="flex-shrink-0 p-3 pt-10">
         <div className="flex gap-3">
           {/* Player 1 - Active player with 50% transparency */}
           <div className={`flex-1 rounded-xl p-3 flex items-center gap-3 ${
@@ -352,8 +352,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
       </div>
 
       {/* Game Board - Transparent dark overlay like original */}
-      <div className="flex-1 p-4">
-        <div className="bg-black bg-opacity-20 rounded-xl p-6 h-full flex items-center justify-center">
+      <div className="flex-1 p-3 min-h-0">
+        <div className="bg-black bg-opacity-20 rounded-xl p-4 h-full flex items-center justify-center">
           {gameState.round.currentVerse && (
             <MobileGameBoard
               verse={gameState.round.currentVerse}
@@ -366,36 +366,56 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
       </div>
 
       {/* Word Tiles - Clean rows, properly spaced with exact original colors */}
-      <div className="flex-shrink-0 p-4">
+      <div className="flex-shrink-0 p-3">
         <div className="flex flex-wrap gap-2 justify-center">
-          {gameState.players.player1.words.map((word, index) => (
-            <div
-              key={`${word}-${index}`}
-              className={`px-3 py-2 rounded-lg font-bold cursor-pointer transition-all ${
-                selectedWordIndex === index 
-                  ? 'bg-yellow-400 text-black shadow-lg transform scale-105' 
-                  : 'bg-red-800 text-white hover:bg-red-700'
-              }`}
-              style={{ 
-                backgroundColor: selectedWordIndex === index ? '#FBBF24' : '#991B1B',
-                color: selectedWordIndex === index ? '#000000' : '#FFFFFF'
-              }}
-              onClick={() => handleWordSelect(index)}
-              onDragStart={(e) => {
-                e.dataTransfer.setData('text/plain', word);
-                e.dataTransfer.setData('wordIndex', index.toString());
-                e.dataTransfer.effectAllowed = 'move';
-              }}
-              draggable={isPlayerTurn}
-            >
-              {word}
-            </div>
-          ))}
+          {gameState.players.player1.words.map((word, index) => {
+            // Check if this word should be highlighted due to a hint
+            const isHintedWord = gameState.round.placementSlots.some(slot => {
+              if (!slot.highlightHint || slot.word !== null) return false;
+              // Get the original verse words to match with slot position
+              const verseWords = gameState.round.currentVerse?.text.split(/\s+/) || [];
+              const slotPosition = gameState.round.placementSlots.indexOf(slot);
+              return verseWords[slotPosition]?.toLowerCase() === word.toLowerCase();
+            });
+            
+            return (
+              <div
+                key={`${word}-${index}`}
+                className={`px-3 py-2 rounded-lg font-bold cursor-pointer transition-all relative ${
+                  selectedWordIndex === index 
+                    ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
+                    : isHintedWord
+                    ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 animate-pulse'
+                    : 'bg-red-800 text-white hover:bg-red-700'
+                }`}
+                style={{ 
+                  backgroundColor: selectedWordIndex === index 
+                    ? '#FBBF24' 
+                    : isHintedWord 
+                    ? '#22C55E' 
+                    : '#991B1B',
+                  color: '#FFFFFF'
+                }}
+                onClick={() => handleWordSelect(index)}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', word);
+                  e.dataTransfer.setData('wordIndex', index.toString());
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                draggable={isPlayerTurn}
+              >
+                {word}
+                {isHintedWord && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-300 rounded-full border border-white" />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Bottom Buttons - Hint and Menu side by side */}
-      <div className="flex-shrink-0 p-4 pb-8">
+      <div className="flex-shrink-0 p-3 pb-6">
         <div className="flex gap-3">
           {/* Hint Button - Green with location icon */}
           <button
