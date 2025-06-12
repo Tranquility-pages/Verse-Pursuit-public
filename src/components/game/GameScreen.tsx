@@ -58,8 +58,8 @@ const MobileGameBoard: React.FC<{
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => handleDrop(e, index)}
           style={{
-            borderBottom: slot.highlightHint ? '4px solid #22C55E' : '3px dashed #FFA500',
-            minWidth: '80px', // One long dash per word
+            borderBottom: slot.highlightHint ? '3px solid #22C55E' : '3px solid #FFA500',
+            minWidth: '100px', // One continuous underline per word
             height: '24px',
             display: 'inline-block',
             backgroundColor: slot.highlightHint ? 'rgba(34, 197, 94, 0.15)' : 'transparent',
