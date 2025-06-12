@@ -50,7 +50,7 @@ const MobileGameBoard: React.FC<{
       const isEmpty = slot.word === null;
       
       const element = isEmpty ? (
-        // Empty slot - ONE orange dash per missing word like original
+        // Empty slot - ONE long continuous dash per missing word like original
         <span
           key={index}
           className={`inline-block cursor-pointer mx-1 ${slot.highlightHint ? 'relative' : ''}`}
@@ -58,16 +58,17 @@ const MobileGameBoard: React.FC<{
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => handleDrop(e, index)}
           style={{
-            borderBottom: slot.highlightHint ? '3px dashed #FBBF24' : '3px dashed #FFA500',
-            minWidth: '40px',
+            borderBottom: slot.highlightHint ? '4px solid #22C55E' : '3px dashed #FFA500',
+            minWidth: '80px', // One long dash per word
             height: '24px',
             display: 'inline-block',
-            backgroundColor: slot.highlightHint ? 'rgba(251, 191, 36, 0.2)' : 'transparent'
+            backgroundColor: slot.highlightHint ? 'rgba(34, 197, 94, 0.15)' : 'transparent',
+            borderRadius: slot.highlightHint ? '4px' : '0'
           }}
         >
           {slot.highlightHint && (
             <div 
-              className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"
+              className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"
               style={{ zIndex: 10 }}
             />
           )}
