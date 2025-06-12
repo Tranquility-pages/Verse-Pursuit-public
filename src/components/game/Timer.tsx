@@ -49,9 +49,7 @@ export const Timer: React.FC<TimerProps> = ({
     <div className={`relative ${className}`}>
       {/* Background Circle */}
       <div className={timerClasses}>
-        <div className={`text-lg md:text-xl font-bold font-mono ${
-          isCritical ? 'animate-pulse' : ''
-        }`}>
+        <div className="text-lg md:text-xl font-bold font-mono">
           {formatTime(remainingTime)}
         </div>
         {isPaused && (
@@ -104,37 +102,7 @@ export const Timer: React.FC<TimerProps> = ({
         />
       </motion.svg>
 
-      {/* Critical warning animation */}
-      {isCritical && !isPaused && (
-        <motion.div
-          className="absolute inset-0 rounded-full border-4 border-red-500"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.3, 0.7, 0.3],
-          }}
-          transition={{
-            duration: 0.8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      )}
 
-      {/* Low time warning pulse */}
-      {isLow && !isCritical && !isPaused && (
-        <motion.div
-          className="absolute inset-0 rounded-full border-2 border-orange-400"
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.2, 0.5, 0.2],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      )}
     </div>
   );
 };
