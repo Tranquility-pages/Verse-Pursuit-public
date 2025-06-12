@@ -68,7 +68,9 @@ export default function Home() {
               <div className="text-white text-sm">or</div>
               <div className="flex gap-3">
                 <a 
-                  href="#app-store"
+                  href="https://apps.apple.com/ca/app/verse-pursuit/id6743778976"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3 bg-black bg-opacity-70 text-white rounded-lg hover:bg-opacity-90 transition-all border border-white border-opacity-20"
                 >
                   📱 App Store

@@ -68,7 +68,9 @@ export default function Support() {
 
               <div className="space-y-4">
                 <a 
-                  href="#app-store"
+                  href="https://apps.apple.com/ca/app/verse-pursuit/id6743778976"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center space-x-3 bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors"
                 >
                   <span className="text-2xl">🍎</span>

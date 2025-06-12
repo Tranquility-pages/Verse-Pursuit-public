@@ -29,7 +29,9 @@ export const Footer: React.FC = () => {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="#app-store" 
+                href="https://apps.apple.com/ca/app/verse-pursuit/id6743778976" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-black bg-opacity-50 hover:bg-opacity-70 px-4 py-2 rounded-lg transition-all duration-200 text-sm"
               >
                 📱 Download on App Store
