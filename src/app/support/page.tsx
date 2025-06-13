@@ -435,11 +435,18 @@ export default function Support() {
                   </div>
                 </a>
                 
-                <div className="bg-gray-100 text-gray-500 py-4 px-6 rounded-xl text-center">
-                  <span className="text-3xl mb-2 block">📲</span>
-                  <div className="text-sm">Coming Soon to</div>
-                  <div className="text-lg font-semibold">Google Play Store</div>
-                </div>
+                <a 
+                  href="https://play.google.com/store/search?q=Verse%20Pursuit&c=apps"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center space-x-3 bg-green-600 text-white py-4 px-6 rounded-xl hover:bg-green-700 transition-colors w-full"
+                >
+                  <span className="text-3xl">📲</span>
+                  <div className="text-left">
+                    <div className="text-sm">Get it on</div>
+                    <div className="text-xl font-semibold">Google Play</div>
+                  </div>
+                </a>
               </div>
 
               <div className="mt-8 bg-green-50 rounded-xl p-6">
