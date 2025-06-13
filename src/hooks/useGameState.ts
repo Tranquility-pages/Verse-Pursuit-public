@@ -45,6 +45,9 @@ export function useGameState(): UseGameStateReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  // Separate timer state to avoid re-renders
+  const [timerState, setTimerState] = useState({ remainingTime: 30, isWarning: false });
+  
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const aiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -105,7 +108,7 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // Optimized timer logic - minimal re-renders
+  // Lightweight timer - only updates separate timer state
   useEffect(() => {
     if (!gameState?.round.isActive || gameState.turn.isPaused) {
       if (timerRef.current) {
@@ -115,60 +118,54 @@ export function useGameState(): UseGameStateReturn {
       return;
     }
 
+    // Sync timer state with game state when round starts
+    setTimerState({
+      remainingTime: gameState.turn.remainingTime,
+      isWarning: gameState.turn.remainingTime <= 10
+    });
+
     const startTimer = () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
       
       timerRef.current = setInterval(() => {
-        setGameState(prevState => {
-          if (!prevState?.round.isActive || prevState.turn.isPaused) {
-            return prevState;
-          }
+        setTimerState(prevTimer => {
+          const newTime = Math.max(0, prevTimer.remainingTime - 1);
+          const isWarning = newTime <= 10;
           
-          // Only update if time actually changed
-          if (prevState.turn.remainingTime <= 0) {
-            return prevState;
-          }
-          
-          const newTime = Math.max(0, prevState.turn.remainingTime - 1);
-          
-          // Create minimal state update - only timer fields
-          const newState = {
-            ...prevState,
-            turn: {
-              ...prevState.turn,
-              remainingTime: newTime,
-              isTimerWarning: newTime <= 10
-            }
-          };
-          
-          // Handle time running out
+          // Only update gameState when timer reaches 0 (avoid constant re-renders)
           if (newTime === 0) {
-            // Switch players or end turn
-            const nextPlayer: 'player1' | 'player2' = newState.players.activePlayer === 'player1' ? 'player2' : 'player1';
-            const switchedState = {
-              ...newState,
-              players: {
-                ...newState.players,
-                activePlayer: nextPlayer
-              },
-              turn: {
-                ...newState.turn,
-                remainingTime: 30, // Reset timer for next player
-                isTimerWarning: false
+            setGameState(prevState => {
+              if (!prevState?.round.isActive) return prevState;
+              
+              const nextPlayer: 'player1' | 'player2' = prevState.players.activePlayer === 'player1' ? 'player2' : 'player1';
+              const switchedState = {
+                ...prevState,
+                players: {
+                  ...prevState.players,
+                  activePlayer: nextPlayer
+                },
+                turn: {
+                  ...prevState.turn,
+                  remainingTime: 30,
+                  isTimerWarning: false
+                }
+              };
+              
+              // Trigger AI if it's AI's turn
+              if (nextPlayer === 'player2') {
+                setTimeout(() => handleAITurn(switchedState), 100);
               }
-            };
+              
+              return switchedState;
+            });
             
-            // Trigger AI if it's AI's turn
-            if (nextPlayer === 'player2') {
-              setTimeout(() => handleAITurn(switchedState), 100);
-            }
-            
-            return switchedState;
+            // Reset timer for next turn
+            return { remainingTime: 30, isWarning: false };
           }
           
-          return newState;
+          return { remainingTime: newTime, isWarning };
         });
       }, 1000);
     };
@@ -283,8 +280,18 @@ export function useGameState(): UseGameStateReturn {
     ? (gameState.players.player1.totalScore + gameState.players.player1.score >= 100 ? 'player1' : 'player2')
     : null;
 
+  // Create modified gameState with separate timer for display
+  const displayGameState = gameState ? {
+    ...gameState,
+    turn: {
+      ...gameState.turn,
+      remainingTime: timerState.remainingTime,
+      isTimerWarning: timerState.isWarning
+    }
+  } : null;
+
   return {
-    gameState,
+    gameState: displayGameState,
     isLoading,
     error,
     startNewGame,
