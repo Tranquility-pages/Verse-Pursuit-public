@@ -873,7 +873,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </button>
               </div>
             </div>
-            </div>
           </div>
         )}
     </>
