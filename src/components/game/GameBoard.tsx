@@ -55,7 +55,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       min-h-[50px] md:min-h-[60px] min-w-[60px] md:min-w-[80px]
       border-2 rounded-lg flex items-center justify-center
       text-center font-biblical text-sm md:text-base
-      transition-all duration-200 ease-in-out
       px-2 py-1
     `;
 

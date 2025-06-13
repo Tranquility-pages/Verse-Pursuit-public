@@ -34,7 +34,7 @@ export const Timer: React.FC<TimerProps> = ({
   const timerClasses = `
     flex flex-col items-center justify-center
     w-20 h-20 md:w-24 md:h-24
-    rounded-full border-4 transition-colors duration-300
+    rounded-full border-4
     ${isCritical 
       ? 'border-red-500 bg-red-50 text-red-700' 
       : isWarning || isLow
