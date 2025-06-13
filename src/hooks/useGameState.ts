@@ -109,100 +109,21 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // COMPLETELY INDEPENDENT TIMER - No connection to gameState
+  // TIMER COMPLETELY DISABLED FOR TESTING
   useEffect(() => {
-    const startIndependentTimer = () => {
-      if (independentTimerRef.current) {
-        clearInterval(independentTimerRef.current);
-      }
-      
-      independentTimerRef.current = setInterval(() => {
-        setIndependentTimer(prevTimer => {
-          const newTime = Math.max(0, prevTimer.remainingTime - 1);
-          const isWarning = newTime <= 10;
-          
-          // Reset to 30 when it reaches 0
-          if (newTime === 0) {
-            return { remainingTime: 30, isWarning: false };
-          }
-          
-          return { remainingTime: newTime, isWarning };
-        });
-      }, 1000);
-    };
-
-    startIndependentTimer();
-
+    console.log('All timer logic disabled to test flicker');
+    
     return () => {
       if (independentTimerRef.current) {
         clearInterval(independentTimerRef.current);
         independentTimerRef.current = null;
       }
-    };
-  }, []); // NO dependencies - completely independent
-
-  // SEPARATE GAME LOGIC TIMER - Only for player switching (no visual updates)
-  useEffect(() => {
-    if (!gameState?.round.isActive || gameState.turn.isPaused) {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      return;
-    }
-
-    const startGameTimer = () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-      
-      let gameTime = gameState.turn.remainingTime;
-      
-      timerRef.current = setInterval(() => {
-        gameTime = Math.max(0, gameTime - 1);
-        
-        // Only update gameState when timer reaches 0 (player switching)
-        if (gameTime === 0) {
-          setGameState(prevState => {
-            if (!prevState?.round.isActive) return prevState;
-            
-            const nextPlayer: 'player1' | 'player2' = prevState.players.activePlayer === 'player1' ? 'player2' : 'player1';
-            const switchedState = {
-              ...prevState,
-              players: {
-                ...prevState.players,
-                activePlayer: nextPlayer
-              },
-              turn: {
-                ...prevState.turn,
-                remainingTime: 30,
-                isTimerWarning: false
-              }
-            };
-            
-            // Trigger AI if it's AI's turn
-            if (nextPlayer === 'player2') {
-              setTimeout(() => handleAITurn(switchedState), 100);
-            }
-            
-            return switchedState;
-          });
-          
-          // Reset game timer
-          gameTime = 30;
-        }
-      }, 1000);
-    };
-
-    startGameTimer();
-
-    return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, [gameState?.round.isActive, gameState?.turn.isPaused, handleAITurn]);
+  }, []);
 
   // Trigger AI turn when it becomes AI's turn
   useEffect(() => {
@@ -304,13 +225,13 @@ export function useGameState(): UseGameStateReturn {
     ? (gameState.players.player1.totalScore + gameState.players.player1.score >= 100 ? 'player1' : 'player2')
     : null;
 
-  // Create modified gameState with independent timer for display
+  // Static timer for testing - no updates
   const displayGameState = gameState ? {
     ...gameState,
     turn: {
       ...gameState.turn,
-      remainingTime: independentTimer.remainingTime,
-      isTimerWarning: independentTimer.isWarning
+      remainingTime: 30, // Static - never changes
+      isTimerWarning: false
     }
   } : null;
 
