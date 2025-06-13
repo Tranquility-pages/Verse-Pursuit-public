@@ -538,7 +538,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
           {gameState.round.currentVerse && (
             <div className="text-center">
               <h2 className="text-2xl font-bold text-white mb-6">{gameState.round.currentVerse.reference}</h2>
-              <div className="bg-white bg-opacity-95 rounded-xl p-6 shadow-lg">
+              <div className="bg-black bg-opacity-20 rounded-xl p-6">
                 <GameBoard
                   verse={gameState.round.currentVerse}
                   placementSlots={gameState.round.placementSlots}

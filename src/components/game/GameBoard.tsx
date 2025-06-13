@@ -61,15 +61,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const stateClasses = isEmpty
       ? isHinted
-        ? 'border-yellow-400 bg-yellow-50 border-dashed'
+        ? 'border-yellow-400 bg-yellow-500 bg-opacity-20 border-dashed text-white'
         : isDragOver
-        ? 'border-biblical-400 bg-biblical-50 border-dashed'
-        : 'border-parchment-300 bg-parchment-50 border-dashed'
+        ? 'border-biblical-400 bg-biblical-500 bg-opacity-20 border-dashed text-white'
+        : 'border-orange-400 bg-orange-500 bg-opacity-20 border-dashed text-white'
       : isSystemLocked
-      ? 'border-biblical-600 bg-biblical-100 text-biblical-800'
+      ? 'border-biblical-600 bg-biblical-500 bg-opacity-30 text-white'
       : isPlayerLocked
-      ? 'border-green-500 bg-green-100 text-green-800'
-      : 'border-red-400 bg-red-100 text-red-700'; // Incorrect placement
+      ? 'border-green-500 bg-green-500 bg-opacity-30 text-white'
+      : 'border-red-400 bg-red-500 bg-opacity-30 text-white'; // Incorrect placement
 
     return (
       <motion.div
@@ -117,7 +117,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       </AnimatePresence>
 
       {/* Game Board */}
-      <div className="bg-parchment-50 rounded-xl p-4 md:p-6 shadow-lg border border-parchment-200">
+      <div className="bg-transparent rounded-xl p-4 md:p-6">
         <div className="flex flex-wrap gap-2 md:gap-3 justify-center items-center leading-relaxed">
           {placementSlots.map((slot, index) => renderSlot(slot, index))}
         </div>
