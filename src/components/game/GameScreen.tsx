@@ -12,6 +12,7 @@ import { HintDisplay } from './HintDisplay';
 import { AvatarDisplay } from './AvatarDisplay';
 import { VerseCategory, VERSE_CATEGORIES } from '@/data/verseData';
 import { PlacementSlot, Verse } from '@/game/types';
+import { playSound } from '@/utils/sounds';
 
 interface GameScreenProps {
   onBackToMenu?: () => void;
@@ -50,20 +51,29 @@ const MobileGameBoard: React.FC<{
       const isEmpty = slot.word === null;
       
       const element = isEmpty ? (
-        // Empty slot - ONE long continuous dash per missing word like original
+        // Empty slot - Enhanced touch area for better accuracy
         <span
           key={index}
           className={`inline-block cursor-pointer mx-1 ${slot.highlightHint ? 'relative' : ''}`}
-          onClick={() => handleSlotClick(index)}
+          onClick={() => {
+            handleSlotClick(index);
+            playSound('word-place', 0.3);
+          }}
           onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => handleDrop(e, index)}
+          onDrop={(e) => {
+            handleDrop(e, index);
+            playSound('word-place', 0.3);
+          }}
           style={{
             borderBottom: slot.highlightHint ? '3px solid #22C55E' : '3px solid #FFA500',
-            minWidth: '50px', // Shorter underline per word for better horizontal spacing
-            height: '24px',
+            minWidth: '60px', // Increased touch area
+            minHeight: '40px', // Increased height for better touch
+            height: 'auto',
             display: 'inline-block',
             backgroundColor: slot.highlightHint ? 'rgba(34, 197, 94, 0.15)' : 'transparent',
-            borderRadius: slot.highlightHint ? '4px' : '0'
+            borderRadius: slot.highlightHint ? '4px' : '0',
+            padding: '8px 4px', // Add padding to increase touch area
+            touchAction: 'manipulation' // Improve touch responsiveness
           }}
         >
           {slot.highlightHint && (
@@ -182,6 +192,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
       window.location.href = '/';
     }
   };
+
 
   // Loading state
   if (isLoading) {
@@ -381,7 +392,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
             return (
               <div
                 key={`${word}-${index}`}
-                className={`px-3 py-2 rounded-lg font-bold cursor-pointer transition-all relative ${
+                className={`px-4 py-3 rounded-lg font-bold cursor-pointer transition-all relative ${
                   selectedWordIndex === index 
                     ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
                     : isHintedWord
@@ -394,13 +405,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                     : isHintedWord 
                     ? '#22C55E' 
                     : '#991B1B',
-                  color: '#FFFFFF'
+                  color: '#FFFFFF',
+                  minHeight: '44px', // Larger touch target
+                  minWidth: '44px',
+                  touchAction: 'manipulation',
+                  userSelect: 'none'
                 }}
-                onClick={() => handleWordSelect(index)}
+                onClick={() => {
+                  handleWordSelect(index);
+                  playSound('word-select', 0.3);
+                }}
                 onDragStart={(e) => {
                   e.dataTransfer.setData('text/plain', word);
                   e.dataTransfer.setData('wordIndex', index.toString());
                   e.dataTransfer.effectAllowed = 'move';
+                  playSound('word-select', 0.2);
                 }}
                 draggable={isPlayerTurn}
               >
@@ -422,6 +441,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
             onClick={useHintAction}
             disabled={!isPlayerTurn || gameState.round.hints <= 0}
             className="flex-1 bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+            style={{ minHeight: '56px', touchAction: 'manipulation' }}
           >
             <span>📍</span>
             Hint
