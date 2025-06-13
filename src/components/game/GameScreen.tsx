@@ -460,71 +460,71 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
     </div>
   );
 
-  // DESKTOP LAYOUT - Redesigned to match mobile style
+  // DESKTOP LAYOUT - Properly sized for desktop, no cheating reference
   const DesktopGameLayout = () => (
     <div 
       className="h-screen flex flex-col bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
+        backgroundImage: "url('/assets/backgrounds/game_background_desktop.png')"
       }}
     >
-      {/* Top Player Profiles - Similar to mobile but side by side */}
-      <div className="flex-shrink-0 p-6 pt-8">
-        <div className="flex justify-center gap-8 max-w-4xl mx-auto">
+      {/* Top Player Profiles - Larger for desktop */}
+      <div className="flex-shrink-0 p-8 pt-12">
+        <div className="flex justify-center gap-12 max-w-6xl mx-auto">
           {/* Player 1 */}
-          <div className={`rounded-xl p-4 flex items-center gap-4 min-w-80 ${ 
+          <div className={`rounded-2xl p-6 flex items-center gap-6 min-w-96 ${ 
             isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
           }`}>
-            <div className="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-yellow-400 border-4 border-white flex items-center justify-center">
               <img 
                 src="/assets/images/Avatar/1.png" 
                 alt="Mark" 
-                className="w-10 h-10 rounded-full"
+                className="w-14 h-14 rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
                   target.nextElementSibling!.textContent = 'M';
                 }}
               />
-              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm hidden">M</div>
+              <div className="w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg hidden">M</div>
             </div>
             <div className="flex-1 text-white">
-              <div className="font-bold text-lg">Mark</div>
-              <div className="text-sm opacity-90">
+              <div className="font-bold text-2xl">Mark</div>
+              <div className="text-lg opacity-90">
                 {gameState.players.player1.score} ({gameState.players.player1.totalScore}) • {gameState.players.player1.words.length} words left
               </div>
             </div>
-            {/* Timer integrated */}
+            {/* Timer integrated - larger for desktop */}
             <div className="flex-shrink-0">
               <Timer
                 remainingTime={gameState.turn.remainingTime}
                 isWarning={gameState.turn.isTimerWarning}
                 isPaused={gameState.turn.isPaused}
-                className="scale-90"
+                className="scale-125"
               />
             </div>
           </div>
           
           {/* Player 2 */}
-          <div className={`rounded-xl p-4 flex items-center gap-4 min-w-80 ${ 
+          <div className={`rounded-2xl p-6 flex items-center gap-6 min-w-96 ${ 
             !isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
           }`}>
-            <div className="w-12 h-12 rounded-full bg-gray-400 border-2 border-white flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-gray-400 border-4 border-white flex items-center justify-center">
               <img 
                 src="/assets/images/Avatar/2.png" 
                 alt="Scholar" 
-                className="w-10 h-10 rounded-full"
+                className="w-14 h-14 rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
                   target.nextElementSibling!.textContent = 'S';
                 }}
               />
-              <div className="w-10 h-10 rounded-full bg-gray-500 text-white flex items-center justify-center font-bold text-sm hidden">S</div>
+              <div className="w-14 h-14 rounded-full bg-gray-500 text-white flex items-center justify-center font-bold text-lg hidden">S</div>
             </div>
             <div className="flex-1 text-white">
-              <div className="font-bold text-lg">Scholar</div>
-              <div className="text-sm opacity-90">
+              <div className="font-bold text-2xl">Scholar</div>
+              <div className="text-lg opacity-90">
                 {gameState.players.player2.score} ({gameState.players.player2.totalScore}) • {gameState.players.player2.words.length} words left
               </div>
             </div>
@@ -532,19 +532,20 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Game Board - No extra containers, transparent overlay */}
-      <div className="flex-1 p-6">
-        <div className="bg-black bg-opacity-20 rounded-xl p-6 h-full flex items-center justify-center max-w-4xl mx-auto">
+      {/* Game Board - NO VERSE REFERENCE, properly sized for desktop */}
+      <div className="flex-1 p-8">
+        <div className="bg-black bg-opacity-20 rounded-2xl p-8 h-full flex items-center justify-center max-w-6xl mx-auto">
           {gameState.round.currentVerse && (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-6">{gameState.round.currentVerse.reference}</h2>
-              <div className="bg-black bg-opacity-20 rounded-xl p-6">
+            <div className="w-full">
+              {/* Use existing GameBoard component but with NO reference shown */}
+              <div className="bg-black bg-opacity-20 rounded-xl p-6 text-2xl">
                 <GameBoard
                   verse={gameState.round.currentVerse}
                   placementSlots={gameState.round.placementSlots}
                   onSlotClick={handleSlotClick}
                   onSlotDrop={handleSlotDrop}
                   showVerseReference={false}
+                  className="text-2xl [&>div>div>div]:text-2xl [&>div>div>div]:min-h-[80px] [&>div>div>div]:min-w-[120px] [&>div>div>div]:border-4"
                 />
               </div>
             </div>
@@ -552,10 +553,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Word Tiles - Direct layout, no extra containers */}
-      <div className="flex-shrink-0 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center">
+      {/* Word Tiles - Larger for desktop */}
+      <div className="flex-shrink-0 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-wrap gap-4 justify-center">
             {gameState.players.player1.words.map((word, index) => {
               // Check if this word should be highlighted due to a hint
               const isHintedWord = gameState.round.placementSlots.some(slot => {
@@ -568,11 +569,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               return (
                 <div
                   key={`${word}-${index}`}
-                  className={`px-4 py-3 rounded-lg font-bold cursor-pointer transition-all relative ${
+                  className={`px-6 py-4 rounded-xl font-bold cursor-pointer transition-all relative text-lg ${
                     selectedWordIndex === index 
                       ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
                       : isHintedWord
-                      ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 animate-pulse'
+                      ? 'bg-green-500 text-white shadow-lg ring-4 ring-green-300 animate-pulse'
                       : 'bg-red-800 text-white hover:bg-red-700'
                   }`}
                   style={{ 
@@ -582,8 +583,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                       ? '#22C55E' 
                       : '#991B1B',
                     color: '#FFFFFF',
-                    minHeight: '48px',
-                    minWidth: '48px',
+                    minHeight: '64px',
+                    minWidth: '80px',
                     touchAction: 'manipulation',
                     userSelect: 'none'
                   }}
@@ -601,7 +602,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 >
                   {word}
                   {isHintedWord && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-300 rounded-full border border-white" />
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-300 rounded-full border-2 border-white" />
                   )}
                 </div>
               );
@@ -610,25 +611,25 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         </div>
       </div>
 
-      {/* Bottom Buttons - Hint and Menu like mobile */}
-      <div className="flex-shrink-0 p-6 pb-8">
-        <div className="flex gap-4 justify-center max-w-md mx-auto">
+      {/* Bottom Buttons - Larger for desktop */}
+      <div className="flex-shrink-0 p-8 pb-12">
+        <div className="flex gap-6 justify-center max-w-xl mx-auto">
           <button
             onClick={useHintAction}
             disabled={!isPlayerTurn || gameState.round.hints <= 0}
-            className="flex-1 bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
-            style={{ minHeight: '56px', touchAction: 'manipulation' }}
+            className="flex-1 bg-green-600 text-white py-5 rounded-xl font-bold flex items-center justify-center gap-3 disabled:opacity-50 text-lg"
+            style={{ minHeight: '72px', touchAction: 'manipulation' }}
           >
-            <span>📍</span>
+            <span className="text-xl">📍</span>
             Hint ({gameState.round.hints})
           </button>
           
           <button
             onClick={handleExitGame}
-            className="flex-1 bg-amber-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2"
-            style={{ minHeight: '56px', touchAction: 'manipulation' }}
+            className="flex-1 bg-amber-800 text-white py-5 rounded-xl font-bold flex items-center justify-center gap-3 text-lg"
+            style={{ minHeight: '72px', touchAction: 'manipulation' }}
           >
-            <span>☰</span>
+            <span className="text-xl">☰</span>
             Menu
           </button>
         </div>
@@ -736,15 +737,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
-              {/* Verse Section - Fully transparent, text on parchment */}
-              {gameState.round.currentVerse && (
-                <div className="text-center mb-6 mx-4 flex-1 flex flex-col justify-center" style={{ marginTop: '-30px' }}>
-                  <h3 className="font-bold text-black mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
-                  <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
-                    {gameState.round.currentVerse.text}
-                  </p>
-                </div>
-              )}
+              {/* Verse Section - Removed to prevent cheating */}
 
               {/* Winner Section */}
               <div className="bg-blue-800 bg-opacity-70 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-600">

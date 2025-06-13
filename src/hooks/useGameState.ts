@@ -56,7 +56,7 @@ export function useGameState(): UseGameStateReturn {
     };
   }, []);
 
-  // AI turn handler
+  // AI turn handler - stabilized with useCallback
   const handleAITurn = useCallback((state: GameState) => {
     if (state.players.activePlayer !== 'player2' || !state.round.isActive || state.turn.isPaused) {
       return;
@@ -103,32 +103,37 @@ export function useGameState(): UseGameStateReturn {
         });
       }, delay);
     }
-  }, []);
+  }, [setGameState]);
 
-  // Game timer effect
+  // Game timer effect - run once and manage internally
   useEffect(() => {
-    if (!gameState?.round.isActive || gameState.turn.isPaused) {
+    const startTimer = () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
-        timerRef.current = null;
       }
-      return;
-    }
+      
+      timerRef.current = setInterval(() => {
+        setGameState(prevState => {
+          if (!prevState) return prevState;
+          
+          // Check if game should be paused/stopped
+          if (!prevState.round.isActive || prevState.turn.isPaused) {
+            return prevState;
+          }
+          
+          const newState = processTurnTimer(prevState, 1);
+          
+          // Check if time ran out and switch players
+          if (newState.turn.remainingTime === 0) {
+            handleAITurn(newState);
+          }
+          
+          return newState;
+        });
+      }, 1000);
+    };
 
-    timerRef.current = setInterval(() => {
-      setGameState(prevState => {
-        if (!prevState) return prevState;
-        
-        const newState = processTurnTimer(prevState, 1);
-        
-        // Check if time ran out and switch players
-        if (newState.turn.remainingTime === 0) {
-          handleAITurn(newState);
-        }
-        
-        return newState;
-      });
-    }, 1000);
+    startTimer();
 
     return () => {
       if (timerRef.current) {
@@ -136,7 +141,7 @@ export function useGameState(): UseGameStateReturn {
         timerRef.current = null;
       }
     };
-  }, [gameState?.round.isActive, gameState?.turn.isPaused, gameState?.players.activePlayer, handleAITurn]);
+  }, [handleAITurn]); // Include handleAITurn to satisfy React Hook rules
 
   // Trigger AI turn when it becomes AI's turn
   useEffect(() => {

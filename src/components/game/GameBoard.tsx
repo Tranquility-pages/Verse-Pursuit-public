@@ -71,7 +71,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       : 'border-red-400 bg-red-500 bg-opacity-30 text-white'; // Incorrect placement
 
     return (
-      <motion.div
+      <div
         key={index}
         className={`${baseClasses} ${stateClasses}`}
         onClick={() => onSlotClick?.(index)}
@@ -85,27 +85,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         {isHinted && isEmpty && (
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full" />
         )}
-      </motion.div>
+      </div>
     );
   };
 
   return (
     <div className={`w-full max-w-4xl mx-auto ${className}`}>
       {/* Verse Reference */}
-      <AnimatePresence>
-        {showVerseReference && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="text-center mb-6"
-          >
-            <h2 className="text-lg md:text-xl font-biblical text-biblical-700">
-              {verse.reference}
-            </h2>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showVerseReference && (
+        <div className="text-center mb-6">
+          <h2 className="text-lg md:text-xl font-biblical text-biblical-700">
+            {verse.reference}
+          </h2>
+        </div>
+      )}
 
       {/* Game Board */}
       <div className="bg-transparent rounded-xl p-4 md:p-6">
