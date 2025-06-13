@@ -146,11 +146,12 @@ export function useGameState(): UseGameStateReturn {
           // Handle time running out
           if (newTime === 0) {
             // Switch players or end turn
+            const nextPlayer: 'player1' | 'player2' = newState.players.activePlayer === 'player1' ? 'player2' : 'player1';
             const switchedState = {
               ...newState,
               players: {
                 ...newState.players,
-                activePlayer: newState.players.activePlayer === 'player1' ? 'player2' : 'player1'
+                activePlayer: nextPlayer
               },
               turn: {
                 ...newState.turn,
@@ -160,7 +161,7 @@ export function useGameState(): UseGameStateReturn {
             };
             
             // Trigger AI if it's AI's turn
-            if (switchedState.players.activePlayer === 'player2') {
+            if (nextPlayer === 'player2') {
               setTimeout(() => handleAITurn(switchedState), 100);
             }
             
