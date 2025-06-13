@@ -76,7 +76,7 @@ export default function Support() {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="text-center bg-white rounded-2xl p-8 shadow-lg"
             >
-              <div className="text-5xl font-bold text-biblical-700 mb-2">5,000+</div>
+              <div className="text-5xl font-bold text-biblical-700 mb-2">20,000+</div>
               <div className="text-xl text-biblical-600 font-semibold">Players Reached</div>
               <div className="text-sm text-biblical-500 mt-2">Believers engaging with Scripture daily</div>
             </motion.div>
@@ -87,7 +87,7 @@ export default function Support() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center bg-white rounded-2xl p-8 shadow-lg"
             >
-              <div className="text-5xl font-bold text-biblical-700 mb-2">50,000+</div>
+              <div className="text-5xl font-bold text-biblical-700 mb-2">200,000+</div>
               <div className="text-xl text-biblical-600 font-semibold">Verses Completed</div>
               <div className="text-sm text-biblical-500 mt-2">Scripture passages memorized</div>
             </motion.div>
@@ -224,14 +224,26 @@ export default function Support() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-biblical text-white mb-6">
-              Choose Your Kingdom Investment
+              <motion.span
+                key="kingdom-investment"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 1.5,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut"
+                }}
+              >
+                Choose Your Kingdom Investment
+              </motion.span>
             </h2>
             <p className="text-xl text-biblical-200 max-w-3xl mx-auto">
               Every contribution, no matter the size, makes an eternal difference in spreading God's Word
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {/* Supporter */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -243,7 +255,7 @@ export default function Support() {
               <h3 className="text-2xl font-bold text-biblical-700 mb-4">Supporter</h3>
               <div className="text-4xl font-bold text-biblical-700 mb-6">$10</div>
               <ul className="text-left space-y-3 text-biblical-600 mb-8">
-                <li>• Keeps the game running for 50+ players for one day</li>
+                <li>• Keeps the game running for 200+ players for one day</li>
                 <li>• Covers basic server costs</li>
                 <li>• Shows your heart for Scripture ministry</li>
                 <li>• Makes the game accessible to those who can't give</li>
@@ -272,7 +284,7 @@ export default function Support() {
               <ul className="text-left space-y-3 text-black mb-8">
                 <li>• Funds game operation for one full week</li>
                 <li>• Supports new Scripture content development</li>
-                <li>• Helps us reach 250+ new believers</li>
+                <li>• Helps us reach 1,000+ new believers</li>
                 <li>• Enables platform improvements and features</li>
               </ul>
               <a 
@@ -296,7 +308,7 @@ export default function Support() {
               <h3 className="text-2xl font-bold text-biblical-700 mb-4">Scripture Champion</h3>
               <div className="text-4xl font-bold text-biblical-700 mb-6">$100</div>
               <ul className="text-left space-y-3 text-biblical-600 mb-8">
-                <li>• Powers the ministry for an entire month</li>
+                <li>• Powers the ministry for half a month</li>
                 <li>• Funds major feature development</li>
                 <li>• Supports global translation efforts</li>
                 <li>• Makes eternal impact on thousands of lives</li>
@@ -310,13 +322,41 @@ export default function Support() {
                 Champion Scripture - $100
               </a>
             </motion.div>
+
+            {/* Kingdom Patron - $500+ */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-8 text-center shadow-xl border-4 border-purple-400"
+            >
+              <div className="text-4xl mb-4">👼</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Kingdom Patron</h3>
+              <div className="bg-white text-purple-600 text-sm font-bold py-1 px-3 rounded-full inline-block mb-4">APP RECOGNITION</div>
+              <div className="text-4xl font-bold text-white mb-6">$500+</div>
+              <ul className="text-left space-y-3 text-purple-100 mb-8">
+                <li>• Powers the entire ministry for a full month</li>
+                <li>• Your name honored in the mobile app</li>
+                <li>• Special patron badge and recognition</li>
+                <li>• Direct impact on thousands of believers worldwide</li>
+                <li>• Exclusive updates on ministry growth</li>
+              </ul>
+              <a 
+                href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4&amount=500"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white text-purple-600 py-3 px-6 rounded-lg font-semibold hover:bg-purple-50 transition-colors"
+              >
+                Become a Kingdom Patron - $500
+              </a>
+            </motion.div>
           </div>
 
           {/* Custom Amount */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
             className="text-center"
           >
             <div className="bg-white bg-opacity-10 rounded-2xl p-8 backdrop-blur-sm">
