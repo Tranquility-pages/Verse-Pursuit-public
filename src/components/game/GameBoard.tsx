@@ -73,25 +73,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     return (
       <motion.div
         key={index}
-        layout
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
         className={`${baseClasses} ${stateClasses}`}
         onClick={() => onSlotClick?.(index)}
         onDragOver={(e) => handleDragOver(e, index)}
         onDragLeave={handleDragLeave}
         onDrop={(e) => handleDrop(e, index)}
-        whileHover={isEmpty ? { scale: 1.02 } : {}}
       >
         <span className="break-words">
           {slot.word || ''}
         </span>
         {isHinted && isEmpty && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"
-          />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full" />
         )}
       </motion.div>
     );
