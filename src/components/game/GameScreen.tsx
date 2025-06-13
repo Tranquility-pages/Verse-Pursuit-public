@@ -719,9 +719,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
-              {/* Bible Verse Text - NO reference to prevent cheating */}
+              {/* Bible Verse Section - Reference OK on Round Summary */}
               {gameState.round.currentVerse && (
                 <div className="text-center mb-6 mx-4 flex-1 flex flex-col justify-center" style={{ marginTop: '-30px' }}>
+                  <h3 className="font-bold text-black mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
                   <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
                     {gameState.round.currentVerse.text}
                   </p>
@@ -840,9 +841,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
-              {/* Bible Verse Text - NO reference to prevent cheating */}
+              {/* Bible Verse Section - Reference OK on Round Summary */}
               {gameState.round.currentVerse && (
                 <div className="text-center mb-8 mx-8">
+                  <h3 className="font-bold text-black mb-4 text-2xl">{gameState.round.currentVerse.reference}</h3>
                   <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto bg-white bg-opacity-80 p-6 rounded-2xl">
                     {gameState.round.currentVerse.text}
                   </p>
