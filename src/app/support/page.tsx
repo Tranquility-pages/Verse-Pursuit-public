@@ -332,14 +332,14 @@ export default function Support() {
             >
               <div className="text-4xl mb-4">👼</div>
               <h3 className="text-2xl font-bold text-white mb-2">Kingdom Patron</h3>
-              <div className="bg-white text-purple-600 text-sm font-bold py-1 px-3 rounded-full inline-block mb-4">APP RECOGNITION</div>
+              <div className="bg-white text-purple-600 text-sm font-bold py-1 px-3 rounded-full inline-block mb-4">MINISTRY CHAMPION</div>
               <div className="text-4xl font-bold text-white mb-6">$500+</div>
               <ul className="text-left space-y-3 text-purple-100 mb-8">
                 <li>• Powers the entire ministry for a full month</li>
-                <li>• Your name honored in the mobile app</li>
-                <li>• Special patron badge and recognition</li>
+                <li>• Recognition on our ministry website</li>
+                <li>• Exclusive quarterly ministry updates</li>
                 <li>• Direct impact on thousands of believers worldwide</li>
-                <li>• Exclusive updates on ministry growth</li>
+                <li>• Personal thank-you letter from our team</li>
               </ul>
               <a 
                 href="https://www.paypal.com/donate/?hosted_button_id=LNPYUUA3ADNX4&amount=500"
@@ -374,6 +374,17 @@ export default function Support() {
               </a>
             </div>
           </motion.div>
+          
+          {/* Apple-Safe Disclaimer */}
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+            <div className="bg-white bg-opacity-20 rounded-xl p-6 text-center backdrop-blur-sm">
+              <p className="text-biblical-200 text-sm leading-relaxed">
+                <strong>Important:</strong> All donations support ministry operations and outreach. 
+                The Verse Pursuit mobile app remains completely free with full functionality regardless of donation status. 
+                No app features, content, or functionality is provided in exchange for donations.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
