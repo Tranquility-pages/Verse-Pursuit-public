@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
 interface TimerProps {
   remainingTime: number;
@@ -60,7 +59,7 @@ export const Timer: React.FC<TimerProps> = ({
       </div>
 
       {/* Progress Ring */}
-      <motion.svg
+      <svg
         className="absolute inset-0 w-full h-full -rotate-90"
         viewBox="0 0 100 100"
       >
@@ -76,7 +75,7 @@ export const Timer: React.FC<TimerProps> = ({
         />
         
         {/* Progress circle */}
-        <motion.circle
+        <circle
           cx="50"
           cy="50"
           r="45"
@@ -94,13 +93,10 @@ export const Timer: React.FC<TimerProps> = ({
           style={{
             strokeDasharray: '283', // 2 * π * 45
             strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`,
+            transition: 'stroke-dashoffset 0.2s ease-out'
           }}
-          animate={{
-            strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`,
-          }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
         />
-      </motion.svg>
+      </svg>
 
 
     </div>
