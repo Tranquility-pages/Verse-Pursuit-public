@@ -460,148 +460,178 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
     </div>
   );
 
-  // DESKTOP LAYOUT - Current layout (you said it's acceptable)
+  // DESKTOP LAYOUT - Redesigned to match mobile style
   const DesktopGameLayout = () => (
     <div 
-      className="h-screen overflow-hidden bg-cover bg-center bg-no-repeat relative"
+      className="h-screen flex flex-col bg-cover bg-center bg-no-repeat relative"
       style={{
         backgroundImage: "url('/assets/backgrounds/game_background_mobile.png')"
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-      <div className="relative z-10 h-full flex flex-col">
-        
-        {/* Header */}
-        <header className="flex-shrink-0 bg-black bg-opacity-30 backdrop-blur-sm p-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <h1 className="text-xl font-biblical text-white">Verse Pursuit</h1>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleNewGame}
-                className="px-4 py-2 bg-biblical-600 text-white rounded-lg hover:bg-biblical-700 transition-colors text-sm"
-              >
-                New Game
-              </button>
-              <button
-                onClick={handleExitGame}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
-              >
-                Exit
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Desktop Player Profiles - Only show on larger screens */}
-        <section className="flex justify-between items-start p-4 gap-4">
-          {/* Player 1 Profile with integrated timer */}
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64">
-            <div className="flex items-center space-x-3 mb-3">
-              <AvatarDisplay
-                avatarId={gameState.players.player1.avatar || "1"}
-                name={gameState.players.player1.name}
-                size={48}
-                isActive={gameState.players.activePlayer === 'player1'}
+      {/* Top Player Profiles - Similar to mobile but side by side */}
+      <div className="flex-shrink-0 p-6 pt-8">
+        <div className="flex justify-center gap-8 max-w-4xl mx-auto">
+          {/* Player 1 */}
+          <div className={`rounded-xl p-4 flex items-center gap-4 min-w-80 ${ 
+            isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
+          }`}>
+            <div className="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white flex items-center justify-center">
+              <img 
+                src="/assets/images/Avatar/1.png" 
+                alt="Mark" 
+                className="w-10 h-10 rounded-full"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling!.textContent = 'M';
+                }}
               />
-              <div className="flex-1">
-                <h3 className="font-bold text-lg text-biblical-700">You</h3>
-                <div className="text-sm text-biblical-600">{gameState.players.player1.words.length} words left</div>
-              </div>
-              {/* Timer integrated here */}
-              <div className="flex-shrink-0">
-                <Timer
-                  remainingTime={gameState.turn.remainingTime}
-                  isWarning={gameState.turn.isTimerWarning}
-                  isPaused={gameState.turn.isPaused}
-                  className="scale-75"
-                />
+              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm hidden">M</div>
+            </div>
+            <div className="flex-1 text-white">
+              <div className="font-bold text-lg">Mark</div>
+              <div className="text-sm opacity-90">
+                {gameState.players.player1.score} ({gameState.players.player1.totalScore}) • {gameState.players.player1.words.length} words left
               </div>
             </div>
-            <div className="text-center space-y-2">
-              <div>
-                <div className="text-xs text-gray-500">Round Score</div>
-                <div className="text-2xl font-bold text-biblical-700">{gameState.players.player1.score}</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-500">Total</div>
-                <div className="text-lg font-semibold text-biblical-600">{gameState.players.player1.totalScore}</div>
-              </div>
+            {/* Timer integrated */}
+            <div className="flex-shrink-0">
+              <Timer
+                remainingTime={gameState.turn.remainingTime}
+                isWarning={gameState.turn.isTimerWarning}
+                isPaused={gameState.turn.isPaused}
+                className="scale-90"
+              />
             </div>
           </div>
           
-          {/* Player 2 Profile */}
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 w-64">
-            <div className="flex items-center space-x-3 mb-3">
-              <AvatarDisplay
-                avatarId={gameState.players.player2.avatar || "2"}
-                name={gameState.players.player2.name}
-                size={48}
-                isActive={gameState.players.activePlayer === 'player2'}
+          {/* Player 2 */}
+          <div className={`rounded-xl p-4 flex items-center gap-4 min-w-80 ${ 
+            !isPlayerTurn ? 'bg-green-600 bg-opacity-80' : 'bg-gray-600 bg-opacity-50'
+          }`}>
+            <div className="w-12 h-12 rounded-full bg-gray-400 border-2 border-white flex items-center justify-center">
+              <img 
+                src="/assets/images/Avatar/2.png" 
+                alt="Scholar" 
+                className="w-10 h-10 rounded-full"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling!.textContent = 'S';
+                }}
               />
-              <div>
-                <h3 className="font-bold text-lg text-biblical-700">Computer</h3>
-                <div className="text-sm text-biblical-600">{gameState.players.player2.words.length} words left</div>
-              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-500 text-white flex items-center justify-center font-bold text-sm hidden">S</div>
             </div>
-            <div className="text-center space-y-2">
-              <div>
-                <div className="text-xs text-gray-500">Round Score</div>
-                <div className="text-2xl font-bold text-biblical-700">{gameState.players.player2.score}</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-500">Total</div>
-                <div className="text-lg font-semibold text-biblical-600">{gameState.players.player2.totalScore}</div>
+            <div className="flex-1 text-white">
+              <div className="font-bold text-lg">Scholar</div>
+              <div className="text-sm opacity-90">
+                {gameState.players.player2.score} ({gameState.players.player2.totalScore}) • {gameState.players.player2.words.length} words left
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        {/* Game Board Section */}
-        <section className="flex-1 min-h-0 flex items-center">
+      {/* Game Board - No extra containers, transparent overlay */}
+      <div className="flex-1 p-6">
+        <div className="bg-black bg-opacity-20 rounded-xl p-6 h-full flex items-center justify-center max-w-4xl mx-auto">
           {gameState.round.currentVerse && (
-            <div className="w-full px-4">
-              <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-white mb-6">{gameState.round.currentVerse.reference}</h2>
+              <div className="bg-white bg-opacity-95 rounded-xl p-6 shadow-lg">
                 <GameBoard
                   verse={gameState.round.currentVerse}
                   placementSlots={gameState.round.placementSlots}
                   onSlotClick={handleSlotClick}
                   onSlotDrop={handleSlotDrop}
-                  showVerseReference={gameState.round.showVerseReference}
+                  showVerseReference={false}
                 />
               </div>
             </div>
           )}
-        </section>
+        </div>
+      </div>
 
-        {/* Player Hand Section with integrated hints */}
-        <section className="flex-shrink-0 p-4">
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4">
-            {/* Hints integrated into player hand header */}
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-biblical-700">
-                {isPlayerTurn ? 'Your Turn' : 'Computer\'s Turn'}
-              </h3>
-              <div className="flex items-center gap-2">
-                <HintDisplay
-                  hintsRemaining={gameState.round.hints}
-                  onUseHint={useHintAction}
-                  onPurchaseHints={purchaseHintsAction}
-                  canUseHint={isPlayerTurn && gameState.round.hints > 0}
-                  canPurchaseHint={isPlayerTurn && gameState.players.player1.score >= 20}
-                />
-              </div>
-            </div>
-            <PlayerHand
-              words={gameState.players.player1.words}
-              playerName={gameState.players.player1.name}
-              isActive={isPlayerTurn}
-              onWordSelect={handleWordSelect}
-              selectedWordIndex={selectedWordIndex}
-            />
+      {/* Word Tiles - Direct layout, no extra containers */}
+      <div className="flex-shrink-0 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-wrap gap-3 justify-center">
+            {gameState.players.player1.words.map((word, index) => {
+              // Check if this word should be highlighted due to a hint
+              const isHintedWord = gameState.round.placementSlots.some(slot => {
+                if (!slot.highlightHint || slot.word !== null) return false;
+                const verseWords = gameState.round.currentVerse?.text.split(/\s+/) || [];
+                const slotPosition = gameState.round.placementSlots.indexOf(slot);
+                return verseWords[slotPosition]?.toLowerCase() === word.toLowerCase();
+              });
+              
+              return (
+                <div
+                  key={`${word}-${index}`}
+                  className={`px-4 py-3 rounded-lg font-bold cursor-pointer transition-all relative ${
+                    selectedWordIndex === index 
+                      ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
+                      : isHintedWord
+                      ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 animate-pulse'
+                      : 'bg-red-800 text-white hover:bg-red-700'
+                  }`}
+                  style={{ 
+                    backgroundColor: selectedWordIndex === index 
+                      ? '#FBBF24' 
+                      : isHintedWord 
+                      ? '#22C55E' 
+                      : '#991B1B',
+                    color: '#FFFFFF',
+                    minHeight: '48px',
+                    minWidth: '48px',
+                    touchAction: 'manipulation',
+                    userSelect: 'none'
+                  }}
+                  onClick={() => {
+                    handleWordSelect(index);
+                    playSound('word-select', 0.3);
+                  }}
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('text/plain', word);
+                    e.dataTransfer.setData('wordIndex', index.toString());
+                    e.dataTransfer.effectAllowed = 'move';
+                    playSound('word-select', 0.2);
+                  }}
+                  draggable={isPlayerTurn}
+                >
+                  {word}
+                  {isHintedWord && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-300 rounded-full border border-white" />
+                  )}
+                </div>
+              );
+            })}
           </div>
-        </section>
+        </div>
+      </div>
+
+      {/* Bottom Buttons - Hint and Menu like mobile */}
+      <div className="flex-shrink-0 p-6 pb-8">
+        <div className="flex gap-4 justify-center max-w-md mx-auto">
+          <button
+            onClick={useHintAction}
+            disabled={!isPlayerTurn || gameState.round.hints <= 0}
+            className="flex-1 bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+            style={{ minHeight: '56px', touchAction: 'manipulation' }}
+          >
+            <span>📍</span>
+            Hint ({gameState.round.hints})
+          </button>
+          
+          <button
+            onClick={handleExitGame}
+            className="flex-1 bg-amber-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2"
+            style={{ minHeight: '56px', touchAction: 'manipulation' }}
+          >
+            <span>☰</span>
+            Menu
+          </button>
+        </div>
       </div>
     </div>
   );
