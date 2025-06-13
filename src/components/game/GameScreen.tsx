@@ -719,6 +719,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
+              {/* Bible Verse Text - NO reference to prevent cheating */}
+              {gameState.round.currentVerse && (
+                <div className="text-center mb-6 mx-4 flex-1 flex flex-col justify-center" style={{ marginTop: '-30px' }}>
+                  <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
+                    {gameState.round.currentVerse.text}
+                  </p>
+                </div>
+              )}
+
               {/* Winner Section */}
               <div className="bg-blue-800 bg-opacity-70 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-600">
                 <div className="text-center">
@@ -830,6 +839,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                   </div>
                 </div>
               </div>
+
+              {/* Bible Verse Text - NO reference to prevent cheating */}
+              {gameState.round.currentVerse && (
+                <div className="text-center mb-8 mx-8">
+                  <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto bg-white bg-opacity-80 p-6 rounded-2xl">
+                    {gameState.round.currentVerse.text}
+                  </p>
+                </div>
+              )}
 
               {/* Winner Section - Larger for desktop */}
               <div className="bg-blue-800 bg-opacity-70 rounded-2xl p-8 mb-8 mx-8 border-2 border-blue-600">

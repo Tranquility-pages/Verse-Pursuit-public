@@ -92,8 +92,7 @@ export const Timer: React.FC<TimerProps> = ({
           }
           style={{
             strokeDasharray: '283', // 2 * π * 45
-            strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`,
-            transition: 'stroke-dashoffset 0.2s ease-out'
+            strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`
           }}
         />
       </svg>
