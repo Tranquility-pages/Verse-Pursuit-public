@@ -45,9 +45,6 @@ export function useGameState(): UseGameStateReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Completely independent timer state
-  const [independentTimer, setIndependentTimer] = useState({ remainingTime: 30, isWarning: false });
-  const independentTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const aiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -109,21 +106,49 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // TIMER COMPLETELY DISABLED FOR TESTING
+  // Restored timer logic - works properly, browser was the issue
   useEffect(() => {
-    console.log('All timer logic disabled to test flicker');
-    
-    return () => {
-      if (independentTimerRef.current) {
-        clearInterval(independentTimerRef.current);
-        independentTimerRef.current = null;
+    if (!gameState?.round.isActive || gameState.turn.isPaused) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
+      return;
+    }
+
+    const startTimer = () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      timerRef.current = setInterval(() => {
+        setGameState(prevState => {
+          if (!prevState?.round.isActive || prevState.turn.isPaused) {
+            return prevState;
+          }
+          
+          const newTime = Math.max(0, prevState.turn.remainingTime - 1);
+          const newState = processTurnTimer(prevState, 1);
+          
+          // Handle time running out and switch players
+          if (newState.turn.remainingTime === 0) {
+            handleAITurn(newState);
+          }
+          
+          return newState;
+        });
+      }, 1000);
+    };
+
+    startTimer();
+
+    return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, []);
+  }, [gameState?.round.isActive, gameState?.turn.isPaused, handleAITurn]);
 
   // Trigger AI turn when it becomes AI's turn
   useEffect(() => {
@@ -225,15 +250,8 @@ export function useGameState(): UseGameStateReturn {
     ? (gameState.players.player1.totalScore + gameState.players.player1.score >= 100 ? 'player1' : 'player2')
     : null;
 
-  // Static timer for testing - no updates
-  const displayGameState = gameState ? {
-    ...gameState,
-    turn: {
-      ...gameState.turn,
-      remainingTime: 30, // Static - never changes
-      isTimerWarning: false
-    }
-  } : null;
+  // Normal gameState - timer logic restored
+  const displayGameState = gameState;
 
   return {
     gameState: displayGameState,
