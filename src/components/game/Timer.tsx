@@ -44,15 +44,62 @@ export const Timer: React.FC<TimerProps> = ({
     ${isPaused ? 'opacity-50' : ''}
   `;
 
-  // TEMPORARILY DISABLED TIMER VISUAL TO TEST BLACK FLASH
   return (
     <div className={`relative ${className}`}>
-      {/* Simple text display instead of visual timer */}
-      <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-800 text-white rounded-full flex items-center justify-center">
+      {/* Background Circle */}
+      <div className={timerClasses}>
         <div className="text-lg md:text-xl font-bold font-mono">
-          {formatTime(remainingTime)}
+          {/* TEMPORARILY DISABLED COUNTDOWN NUMBERS TO TEST BLACK FLASH */}
+          {/* {formatTime(remainingTime)} */}
+          00:30
         </div>
+        {isPaused && (
+          <div className="text-xs opacity-70">
+            PAUSED
+          </div>
+        )}
       </div>
+
+      {/* Progress Ring */}
+      <svg
+        className="absolute inset-0 w-full h-full -rotate-90"
+        viewBox="0 0 100 100"
+      >
+        {/* Background circle */}
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="4"
+          className="text-gray-200"
+        />
+        
+        {/* Progress circle - ALSO DISABLED TO TEST */}
+        {/* <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="6"
+          strokeLinecap="round"
+          className={
+            isCritical 
+              ? 'text-red-500' 
+              : isWarning || isLow
+              ? 'text-orange-400'
+              : 'text-green-400'
+          }
+          style={{
+            strokeDasharray: '283', // 2 * π * 45
+            strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`
+          }}
+        /> */}
+      </svg>
+
+
     </div>
   );
 };
