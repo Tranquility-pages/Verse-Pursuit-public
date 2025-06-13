@@ -105,19 +105,82 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // TEMPORARILY DISABLED TIMER LOGIC TO TEST BLACK FLASH
+  // Optimized timer logic - minimal re-renders
   useEffect(() => {
-    // Timer logic disabled - this was causing setGameState every second
-    // which could be causing React re-renders and the black flash
-    console.log('Timer logic disabled for testing');
-    
+    if (!gameState?.round.isActive || gameState.turn.isPaused) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+
+    const startTimer = () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      timerRef.current = setInterval(() => {
+        setGameState(prevState => {
+          if (!prevState?.round.isActive || prevState.turn.isPaused) {
+            return prevState;
+          }
+          
+          // Only update if time actually changed
+          if (prevState.turn.remainingTime <= 0) {
+            return prevState;
+          }
+          
+          const newTime = Math.max(0, prevState.turn.remainingTime - 1);
+          
+          // Create minimal state update - only timer fields
+          const newState = {
+            ...prevState,
+            turn: {
+              ...prevState.turn,
+              remainingTime: newTime,
+              isTimerWarning: newTime <= 10
+            }
+          };
+          
+          // Handle time running out
+          if (newTime === 0) {
+            // Switch players or end turn
+            const switchedState = {
+              ...newState,
+              players: {
+                ...newState.players,
+                activePlayer: newState.players.activePlayer === 'player1' ? 'player2' : 'player1'
+              },
+              turn: {
+                ...newState.turn,
+                remainingTime: 30, // Reset timer for next player
+                isTimerWarning: false
+              }
+            };
+            
+            // Trigger AI if it's AI's turn
+            if (switchedState.players.activePlayer === 'player2') {
+              setTimeout(() => handleAITurn(switchedState), 100);
+            }
+            
+            return switchedState;
+          }
+          
+          return newState;
+        });
+      }, 1000);
+    };
+
+    startTimer();
+
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, [handleAITurn]);
+  }, [gameState?.round.isActive, gameState?.turn.isPaused, handleAITurn]);
 
   // Trigger AI turn when it becomes AI's turn
   useEffect(() => {
