@@ -617,15 +617,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm mx-4 h-full flex flex-col py-8"
+              className="w-full max-w-sm mx-4 h-full flex flex-col py-2"
             >
-              {/* Header - Moved to top */}
-              <div className="text-center mb-4 pt-4">
+              {/* Header - At very top */}
+              <div className="text-center mb-2 pt-2">
                 <h1 className="text-yellow-400 text-xl font-bold">Round Summary</h1>
               </div>
 
-              {/* Player Profiles - Moved up close to header */}
-              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-6 mx-4" style={{ zIndex: 10, position: 'relative' }}>
+              {/* Player Profiles - Close to header */}
+              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-4 mx-4" style={{ zIndex: 10, position: 'relative' }}>
                 <div className="flex items-center justify-between">
                   {/* Player 1 */}
                   <div className="flex flex-col items-center">
@@ -688,7 +688,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
 
               {/* Verse Section - Fully transparent, text on parchment */}
               {gameState.round.currentVerse && (
-                <div className="text-center mb-6 mx-4 py-6 flex-1 flex flex-col justify-center">
+                <div className="text-center mb-6 mx-4 flex-1 flex flex-col justify-center" style={{ marginTop: '-30px' }}>
                   <h3 className="font-bold text-black mb-4 text-lg">{gameState.round.currentVerse.reference}</h3>
                   <p className="text-base text-gray-700 leading-relaxed max-w-xs mx-auto">
                     {gameState.round.currentVerse.text}
