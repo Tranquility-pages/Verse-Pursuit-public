@@ -45,8 +45,9 @@ export function useGameState(): UseGameStateReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Separate timer state to avoid re-renders
-  const [timerState, setTimerState] = useState({ remainingTime: 30, isWarning: false });
+  // Completely independent timer state
+  const [independentTimer, setIndependentTimer] = useState({ remainingTime: 30, isWarning: false });
+  const independentTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const aiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -108,7 +109,39 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // Lightweight timer - only updates separate timer state
+  // COMPLETELY INDEPENDENT TIMER - No connection to gameState
+  useEffect(() => {
+    const startIndependentTimer = () => {
+      if (independentTimerRef.current) {
+        clearInterval(independentTimerRef.current);
+      }
+      
+      independentTimerRef.current = setInterval(() => {
+        setIndependentTimer(prevTimer => {
+          const newTime = Math.max(0, prevTimer.remainingTime - 1);
+          const isWarning = newTime <= 10;
+          
+          // Reset to 30 when it reaches 0
+          if (newTime === 0) {
+            return { remainingTime: 30, isWarning: false };
+          }
+          
+          return { remainingTime: newTime, isWarning };
+        });
+      }, 1000);
+    };
+
+    startIndependentTimer();
+
+    return () => {
+      if (independentTimerRef.current) {
+        clearInterval(independentTimerRef.current);
+        independentTimerRef.current = null;
+      }
+    };
+  }, []); // NO dependencies - completely independent
+
+  // SEPARATE GAME LOGIC TIMER - Only for player switching (no visual updates)
   useEffect(() => {
     if (!gameState?.round.isActive || gameState.turn.isPaused) {
       if (timerRef.current) {
@@ -118,59 +151,50 @@ export function useGameState(): UseGameStateReturn {
       return;
     }
 
-    // Sync timer state with game state when round starts
-    setTimerState({
-      remainingTime: gameState.turn.remainingTime,
-      isWarning: gameState.turn.remainingTime <= 10
-    });
-
-    const startTimer = () => {
+    const startGameTimer = () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
       
+      let gameTime = gameState.turn.remainingTime;
+      
       timerRef.current = setInterval(() => {
-        setTimerState(prevTimer => {
-          const newTime = Math.max(0, prevTimer.remainingTime - 1);
-          const isWarning = newTime <= 10;
-          
-          // Only update gameState when timer reaches 0 (avoid constant re-renders)
-          if (newTime === 0) {
-            setGameState(prevState => {
-              if (!prevState?.round.isActive) return prevState;
-              
-              const nextPlayer: 'player1' | 'player2' = prevState.players.activePlayer === 'player1' ? 'player2' : 'player1';
-              const switchedState = {
-                ...prevState,
-                players: {
-                  ...prevState.players,
-                  activePlayer: nextPlayer
-                },
-                turn: {
-                  ...prevState.turn,
-                  remainingTime: 30,
-                  isTimerWarning: false
-                }
-              };
-              
-              // Trigger AI if it's AI's turn
-              if (nextPlayer === 'player2') {
-                setTimeout(() => handleAITurn(switchedState), 100);
-              }
-              
-              return switchedState;
-            });
+        gameTime = Math.max(0, gameTime - 1);
+        
+        // Only update gameState when timer reaches 0 (player switching)
+        if (gameTime === 0) {
+          setGameState(prevState => {
+            if (!prevState?.round.isActive) return prevState;
             
-            // Reset timer for next turn
-            return { remainingTime: 30, isWarning: false };
-          }
+            const nextPlayer: 'player1' | 'player2' = prevState.players.activePlayer === 'player1' ? 'player2' : 'player1';
+            const switchedState = {
+              ...prevState,
+              players: {
+                ...prevState.players,
+                activePlayer: nextPlayer
+              },
+              turn: {
+                ...prevState.turn,
+                remainingTime: 30,
+                isTimerWarning: false
+              }
+            };
+            
+            // Trigger AI if it's AI's turn
+            if (nextPlayer === 'player2') {
+              setTimeout(() => handleAITurn(switchedState), 100);
+            }
+            
+            return switchedState;
+          });
           
-          return { remainingTime: newTime, isWarning };
-        });
+          // Reset game timer
+          gameTime = 30;
+        }
       }, 1000);
     };
 
-    startTimer();
+    startGameTimer();
 
     return () => {
       if (timerRef.current) {
@@ -280,13 +304,13 @@ export function useGameState(): UseGameStateReturn {
     ? (gameState.players.player1.totalScore + gameState.players.player1.score >= 100 ? 'player1' : 'player2')
     : null;
 
-  // Create modified gameState with separate timer for display
+  // Create modified gameState with independent timer for display
   const displayGameState = gameState ? {
     ...gameState,
     turn: {
       ...gameState.turn,
-      remainingTime: timerState.remainingTime,
-      isTimerWarning: timerState.isWarning
+      remainingTime: independentTimer.remainingTime,
+      isTimerWarning: independentTimer.isWarning
     }
   } : null;
 
