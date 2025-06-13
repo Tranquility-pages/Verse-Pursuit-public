@@ -49,9 +49,7 @@ export const Timer: React.FC<TimerProps> = ({
       {/* Background Circle */}
       <div className={timerClasses}>
         <div className="text-lg md:text-xl font-bold font-mono">
-          {/* TEMPORARILY DISABLED COUNTDOWN NUMBERS TO TEST BLACK FLASH */}
-          {/* {formatTime(remainingTime)} */}
-          00:30
+          {formatTime(remainingTime)}
         </div>
         {isPaused && (
           <div className="text-xs opacity-70">
@@ -76,8 +74,8 @@ export const Timer: React.FC<TimerProps> = ({
           className="text-gray-200"
         />
         
-        {/* Progress circle - ALSO DISABLED TO TEST */}
-        {/* <circle
+        {/* Progress circle */}
+        <circle
           cx="50"
           cy="50"
           r="45"
@@ -96,7 +94,7 @@ export const Timer: React.FC<TimerProps> = ({
             strokeDasharray: '283', // 2 * π * 45
             strokeDashoffset: `${283 - (283 * getProgressPercentage()) / 100}`
           }}
-        /> */}
+        />
       </svg>
 
 

@@ -105,43 +105,19 @@ export function useGameState(): UseGameStateReturn {
     }
   }, [setGameState]);
 
-  // Game timer effect - run once and manage internally
+  // TEMPORARILY DISABLED TIMER LOGIC TO TEST BLACK FLASH
   useEffect(() => {
-    const startTimer = () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-      
-      timerRef.current = setInterval(() => {
-        setGameState(prevState => {
-          if (!prevState) return prevState;
-          
-          // Check if game should be paused/stopped
-          if (!prevState.round.isActive || prevState.turn.isPaused) {
-            return prevState;
-          }
-          
-          const newState = processTurnTimer(prevState, 1);
-          
-          // Check if time ran out and switch players
-          if (newState.turn.remainingTime === 0) {
-            handleAITurn(newState);
-          }
-          
-          return newState;
-        });
-      }, 1000);
-    };
-
-    startTimer();
-
+    // Timer logic disabled - this was causing setGameState every second
+    // which could be causing React re-renders and the black flash
+    console.log('Timer logic disabled for testing');
+    
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, [handleAITurn]); // Include handleAITurn to satisfy React Hook rules
+  }, [handleAITurn]);
 
   // Trigger AI turn when it becomes AI's turn
   useEffect(() => {
