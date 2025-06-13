@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useGameState } from '@/hooks/useGameState';
 import { GameBoard } from './GameBoard';
@@ -198,11 +197,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-parchment-100">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className="w-8 h-8 border-4 border-biblical-400 border-t-transparent rounded-full"
-        />
+        <div className="w-8 h-8 border-4 border-biblical-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -242,11 +237,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative z-10 bg-gradient-to-b from-yellow-50 to-amber-50 rounded-2xl shadow-2xl p-8 w-full max-w-lg border-4 border-yellow-400"
-        >
+        <div className="relative z-10 bg-gradient-to-b from-yellow-50 to-amber-50 rounded-2xl shadow-2xl p-8 w-full max-w-lg border-4 border-yellow-400">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-biblical text-yellow-800 mb-2">Verse Pursuit</h1>
             <p className="text-sm text-yellow-700 italic">"Pursue. Learn. Grow."</p>
@@ -279,18 +270,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
           <div className="space-y-3">
             <button
               onClick={handleStartGame}
-              className="w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-lg font-bold rounded-xl shadow-lg hover:from-yellow-400 hover:to-amber-400 transition-all border-2 border-yellow-600"
+              className="w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-lg font-bold rounded-xl shadow-lg hover:from-yellow-400 hover:to-amber-400 border-2 border-yellow-600"
             >
               🎮 Start Game
             </button>
             <Link
               href="/"
-              className="block w-full py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-semibold rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all text-center border-2 border-gray-300"
+              className="block w-full py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-semibold rounded-xl hover:from-gray-200 hover:to-gray-300 text-center border-2 border-gray-300"
             >
               ← Back to Home
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -392,11 +383,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
             return (
               <div
                 key={`${word}-${index}`}
-                className={`px-4 py-3 rounded-lg font-bold cursor-pointer transition-all relative ${
+                className={`px-4 py-3 rounded-lg font-bold cursor-pointer relative ${
                   selectedWordIndex === index 
                     ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
                     : isHintedWord
-                    ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 animate-pulse'
+                    ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300'
                     : 'bg-red-800 text-white hover:bg-red-700'
                 }`}
                 style={{ 
@@ -569,11 +560,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               return (
                 <div
                   key={`${word}-${index}`}
-                  className={`px-6 py-4 rounded-xl font-bold cursor-pointer transition-all relative text-lg ${
+                  className={`px-6 py-4 rounded-xl font-bold cursor-pointer relative text-lg ${
                     selectedWordIndex === index 
                       ? 'bg-yellow-400 text-black shadow-lg transform scale-105'
                       : isHintedWord
-                      ? 'bg-green-500 text-white shadow-lg ring-4 ring-green-300 animate-pulse'
+                      ? 'bg-green-500 text-white shadow-lg ring-4 ring-green-300'
                       : 'bg-red-800 text-white hover:bg-red-700'
                   }`}
                   style={{ 
@@ -650,13 +641,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
       </div>
 
       {/* Round Complete Summary Screen - Exact replica of original app */}
-      <AnimatePresence>
-        {isRoundComplete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
+      {isRoundComplete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center"
             style={{
               backgroundImage: "url('/assets/backgrounds/Round_summary.png')",
               backgroundSize: 'cover',
@@ -664,19 +650,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
               backgroundRepeat: 'no-repeat'
             }}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm mx-4 h-full flex flex-col py-2"
-            >
-              {/* Header - At very top */}
+            {/* Mobile Round Summary */}
+            <div className="w-full max-w-sm mx-4 h-full flex flex-col py-2 lg:hidden">
+              {/* Header */}
               <div className="text-center mb-2 pt-2">
                 <h1 className="text-yellow-400 text-xl font-bold">Round Summary</h1>
               </div>
 
-              {/* Player Profiles - Close to header */}
-              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-4 mx-4" style={{ zIndex: 10, position: 'relative' }}>
+              {/* Player Profiles */}
+              <div className="bg-black bg-opacity-25 rounded-xl p-4 mb-4 mx-4">
                 <div className="flex items-center justify-between">
                   {/* Player 1 */}
                   <div className="flex flex-col items-center">
@@ -737,8 +719,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 </div>
               </div>
 
-              {/* Verse Section - Removed to prevent cheating */}
-
               {/* Winner Section */}
               <div className="bg-blue-800 bg-opacity-70 rounded-xl p-4 mb-6 mx-4 border-2 border-blue-600">
                 <div className="text-center">
@@ -768,22 +748,134 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onBackToMenu }) => {
                 {!isGameComplete && (
                   <button
                     onClick={handleNextRound}
-                    className="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-colors"
+                    className="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700"
                   >
                     Next Round
                   </button>
                 )}
                 <button
                   onClick={handleExitGame}
-                  className="flex-1 bg-amber-800 text-white py-3 rounded-xl font-bold hover:bg-amber-900 transition-colors"
+                  className="flex-1 bg-amber-800 text-white py-3 rounded-xl font-bold hover:bg-amber-900"
                 >
                   Main Menu
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+
+            {/* Desktop Round Summary - Properly sized */}
+            <div className="hidden lg:flex w-full max-w-4xl mx-8 h-full flex-col justify-center py-12">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <h1 className="text-yellow-400 text-4xl font-bold">Round Summary</h1>
+              </div>
+
+              {/* Player Profiles - Larger for desktop */}
+              <div className="bg-black bg-opacity-30 rounded-2xl p-8 mb-8 mx-8">
+                <div className="flex items-center justify-between max-w-3xl mx-auto">
+                  {/* Player 1 */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 rounded-full bg-green-500 border-4 border-white flex items-center justify-center mb-4">
+                      <img 
+                        src="/assets/images/Avatar/1.png" 
+                        alt="Mark" 
+                        className="w-20 h-20 rounded-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.textContent = 'M';
+                        }}
+                      />
+                      <div className="w-20 h-20 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-2xl hidden">M</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-xl text-white mb-2">Mark</div>
+                      <div className="bg-yellow-400 text-black px-4 py-2 rounded-lg text-lg font-bold mb-2">
+                        Round: {gameState.players.player1.score}
+                      </div>
+                      <div className="text-lg text-gray-300">
+                        {gameState.players.player1.totalScore} Total
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* VS */}
+                  <div className="bg-amber-700 text-white px-6 py-3 rounded-full text-2xl font-bold">
+                    VS
+                  </div>
+
+                  {/* Player 2 */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center mb-4">
+                      <img 
+                        src="/assets/images/Avatar/2.png" 
+                        alt="Scholar" 
+                        className="w-20 h-20 rounded-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.textContent = 'S';
+                        }}
+                      />
+                      <div className="w-20 h-20 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-2xl hidden">S</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-xl text-white mb-2">Scholar</div>
+                      <div className="bg-blue-400 text-white px-4 py-2 rounded-lg text-lg font-bold mb-2">
+                        Round: {gameState.players.player2.score}
+                      </div>
+                      <div className="text-lg text-gray-300">
+                        {gameState.players.player2.totalScore} Total
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Winner Section - Larger for desktop */}
+              <div className="bg-blue-800 bg-opacity-70 rounded-2xl p-8 mb-8 mx-8 border-2 border-blue-600">
+                <div className="text-center">
+                  <h3 className="text-yellow-400 font-bold mb-4 text-2xl">Round Winner</h3>
+                  <div className="flex items-center justify-center gap-6">
+                    <div className="w-16 h-16 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center">
+                      {gameState.players.player1.score > gameState.players.player2.score ? (
+                        <img src="/assets/images/Avatar/1.png" alt="Mark" className="w-12 h-12 rounded-full" />
+                      ) : (
+                        <img src="/assets/images/Avatar/2.png" alt="Scholar" className="w-12 h-12 rounded-full" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-2xl">
+                        {gameState.players.player1.score > gameState.players.player2.score ? 'Mark' : 'Scholar'}
+                      </div>
+                      <div className="text-yellow-400 text-lg">
+                        Score: {Math.max(gameState.players.player1.score, gameState.players.player2.score)} points
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons - Larger for desktop */}
+              <div className="flex gap-6 mx-8 justify-center max-w-2xl mx-auto">
+                {!isGameComplete && (
+                  <button
+                    onClick={handleNextRound}
+                    className="flex-1 bg-green-600 text-white py-4 px-8 rounded-2xl font-bold text-xl hover:bg-green-700"
+                  >
+                    Next Round
+                  </button>
+                )}
+                <button
+                  onClick={handleExitGame}
+                  className="flex-1 bg-amber-800 text-white py-4 px-8 rounded-2xl font-bold text-xl hover:bg-amber-900"
+                >
+                  Main Menu
+                </button>
+              </div>
+            </div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 };
