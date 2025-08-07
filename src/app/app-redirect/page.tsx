@@ -63,17 +63,27 @@ export default function AppRedirect() {
   }, [redirectUrl]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100">
-      <div className="text-center max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Redirecting you to {APP_CONFIG.appName}</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gradient-to-b from-blue-50 to-indigo-100">
+      <div className="text-center max-w-md bg-white p-8 rounded-lg shadow-lg border border-indigo-100">
+        <div className="flex justify-center mb-4">
+          <img 
+            src="/assets/images/App-Icon-1024x1024@1x.png" 
+            alt="Verse Pursuit Logo" 
+            className="w-24 h-24 rounded-xl shadow-md" 
+          />
+        </div>
+        <h1 className="text-2xl font-bold mb-3 text-indigo-800">{APP_CONFIG.appName}</h1>
         {isLoading ? (
-          <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-            <p>Detecting your device...</p>
+          <div className="flex flex-col items-center mt-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-600 mb-3"></div>
+            <p className="text-gray-600">Preparing your download...</p>
           </div>
         ) : (
-          <p>Taking you to the app store...</p>
+          <div className="mt-4">
+            <p className="text-indigo-600 font-medium">Taking you to the App Store...</p>
+          </div>
         )}
+        <p className="text-sm text-gray-500 mt-4">You'll be redirected automatically in a moment</p>
       </div>
     </div>
   );
