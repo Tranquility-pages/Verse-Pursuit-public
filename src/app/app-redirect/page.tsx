@@ -9,6 +9,8 @@ const APP_CONFIG = {
   tagline: "Pursue. Learn. Grow.",
 };
 
+const APP_SCHEME = "versepursuit://";
+
 type DeviceType = "iOS" | "android" | "desktop" | null;
 
 export default function AppRedirect() {
@@ -33,9 +35,14 @@ export default function AppRedirect() {
     
     if (detectedDevice === "iOS" || detectedDevice === "android") {
       setIsRedirecting(true);
+
+      // Try to open the app via custom URL scheme first
+      window.location.href = APP_SCHEME + "open";
+
+      // If app is not installed, redirect to store after delay
       const timer = setTimeout(() => {
         window.location.href = detectedDevice === "iOS" ? APP_CONFIG.iOS : APP_CONFIG.android;
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -94,10 +101,10 @@ export default function AppRedirect() {
                 <div className="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
               </div>
               <p className="text-white text-lg font-medium drop-shadow-lg">
-                Taking you to the {device === "iOS" ? "App Store" : "Play Store"}...
+                Opening Verse Pursuit...
               </p>
               <p className="text-white/70 text-sm mt-2">
-                You'll be redirected automatically
+                If the app isn't installed, you'll be redirected to the {device === "iOS" ? "App Store" : "Play Store"}
               </p>
             </div>
           )}
