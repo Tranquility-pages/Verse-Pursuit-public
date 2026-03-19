@@ -1,0 +1,18 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const data = [
+    {
+      relation: ["delegate_permission/common.handle_all_urls"],
+      target: {
+        namespace: "android_app",
+        package_name: "com.versepursuit.app",
+        sha256_cert_fingerprints: [
+          "31:43:09:24:C5:BB:00:C7:BA:0C:D1:F1:5D:F0:88:F2:14:4A:0D:AF:AC:F3:23:6A:AB:FE:1E:49:5F:76:C8:8D"
+        ]
+      }
+    }
+  ];
+
+  return NextResponse.json(data);
+}
