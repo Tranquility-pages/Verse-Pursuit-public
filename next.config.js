@@ -11,14 +11,14 @@ const nextConfig = {
   // Only use basePath for GitHub Pages, not Vercel
   basePath: isGitHubPages ? '/Verse-Pursuit-public' : '',
   assetPrefix: isGitHubPages ? '/Verse-Pursuit-public' : '',
-  
-  // Optimize for flicker reduction
-  experimental: {
-    optimizeCss: false, // Disable CSS optimization that might cause flicker
-  },
+
   // Disable React strict mode in production to reduce re-renders
   reactStrictMode: false,
-  // Reduce chunk splitting that might cause loading flicker
+
+  // Next.js 16 uses Turbopack by default - empty config to acknowledge
+  turbopack: {},
+
+  // Keep webpack config for fallback compatibility
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.optimization.splitChunks = {
