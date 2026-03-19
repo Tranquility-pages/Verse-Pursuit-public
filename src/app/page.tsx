@@ -100,7 +100,7 @@ export default function Home() {
                   📱 App Store
                 </a>
                 <a 
-                  href="https://play.google.com/store/search?q=Verse%20Pursuit&c=apps"
+                  href="https://play.google.com/store/apps/details?id=com.versepursuit.app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3 bg-black bg-opacity-70 text-white rounded-lg hover:bg-opacity-90 transition-all border border-white border-opacity-20"

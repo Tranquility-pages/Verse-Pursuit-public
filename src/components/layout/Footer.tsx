@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
                 📱 Download on App Store
               </a>
               <a 
-                href="https://play.google.com/store/search?q=Verse%20Pursuit&c=apps"
+                href="https://play.google.com/store/apps/details?id=com.versepursuit.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-black bg-opacity-50 hover:bg-opacity-70 px-4 py-2 rounded-lg transition-all duration-200 text-sm"

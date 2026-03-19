@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Project-specific Vercel CLI wrapper for Verse-Pursuit-website
+# This script uses the project's .vercel-config directory instead of the global config
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VERCEL_CONFIG_DIR="$SCRIPT_DIR/.vercel-config"
+
+if [ ! -d "$VERCEL_CONFIG_DIR" ]; then
+    echo "Error: Project-specific Vercel config directory not found at $VERCEL_CONFIG_DIR"
+    echo "Please run the setup script first."
+    exit 1
+fi
+
+echo "Using project-specific Vercel config from: $VERCEL_CONFIG_DIR"
+echo "Project: Verse-Pursuit-website"
+echo "Running: vercel --global-config=\"$VERCEL_CONFIG_DIR\" $@"
+echo ""
+
+# Execute Vercel CLI with project-specific config
+vercel --global-config="$VERCEL_CONFIG_DIR" "$@"

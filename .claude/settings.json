@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(expo:*)",
+      "Bash(node:*)",
+      "Bash(yarn:*)",
+      "WebFetch(domain:reactnative.dev)",
+      "WebFetch(domain:docs.expo.dev)",
+      "WebFetch(domain:github.com)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(cd /Users/collinmclaughlin/Verseveil:*)",
+      "Bash(cd /Users/collinmclaughlin/VersePursuit:*)",
+      "Bash(cd /Users/collinmclaughlin/Tranquilitysite:*)",
+      "Bash(cd /Users/collinmclaughlin/Synurawebsite:*)",
+      "Bash(cd /Users/collinmclaughlin/eximiaSite:*)"
+    ]
+  },
+  "env": {
+    "PROJECT_NAME": "Verse-Pursuit-website"
+  }
+}
