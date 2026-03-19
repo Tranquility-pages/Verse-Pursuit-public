@@ -9,7 +9,7 @@ const APP_CONFIG = {
   tagline: "Pursue. Learn. Grow.",
 };
 
-const APP_SCHEME = "versepursuit://";
+const APP_SCHEME = "verse-pursuit://";
 
 type DeviceType = "iOS" | "android" | "desktop" | null;
 
