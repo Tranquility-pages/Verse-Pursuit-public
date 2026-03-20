@@ -18,19 +18,33 @@ export default function AppRedirect() {
     const detectDevice = (): DeviceType => {
       const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
       
-      if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+      // Check for iOS devices (iPhone, iPod)
+      if (/iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
         return "iOS";
       }
+      
+      // Check for iPad - includes newer iPads that report as Mac
+      if (/iPad/.test(userAgent)) {
+        return "iOS";
+      }
+      
+      // Check for iPad on iOS 13+ (reports as Mac but has touch)
+      if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) {
+        return "iOS";
+      }
+      
+      // Check for Android devices (phones and tablets)
       if (/android/i.test(userAgent)) {
         return "android";
       }
+      
       return "desktop";
     };
 
     const detectedDevice = detectDevice();
     setDevice(detectedDevice);
     
-    // Immediately redirect mobile users to the appropriate store
+    // Immediately redirect mobile/tablet users to the appropriate store
     // Universal Links will intercept this and open the app if installed
     if (detectedDevice === "iOS") {
       window.location.href = APP_CONFIG.iOS;
@@ -60,7 +74,7 @@ export default function AppRedirect() {
     );
   }
 
-  // Mobile users should be redirected, but show fallback just in case
+  // Mobile/tablet users should be redirected, but show fallback just in case
   if (device === "iOS" || device === "android") {
     return (
       <div 
